@@ -1,0 +1,33 @@
+{
+  "name": "yapople",
+  "version": "0.0.1",
+  "author": "Andrew D.Laptev <a.d.laptev@gmail.com>",
+  "description": "Yet another POP3 library",
+  "main": "lib/yapople.js",
+  "scripts": {
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha",
+    "test-on-travis": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly",
+    "test-coveralls": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls && rm -rf ./coverage",
+    "upload-to-coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agsh/yapople.git"
+  },
+  "dependencies": {
+  },
+  "keywords": [
+    "mail",
+    "pop3"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.6"
+  },
+  "devDependencies": {
+    "coveralls": ">=2.11.2",
+    "istanbul": ">=0.3.5",
+    "mocha": ">=2.1.0",
+    "mocha-lcov-reporter": "0.0.1"
+  }
+}

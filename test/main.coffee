@@ -1,0 +1,2 @@
+yapople = require '../lib/yapople'
+
