@@ -7,24 +7,32 @@
   assert = require('assert');
 
   describe('POP3 client tests', function() {
-    var client;
-    client = null;
-    before(function(done) {
-      var options;
-      options = {
-        hostname: process.env.HOSTNAME ? process.env.HOSTNAME : 'smtp.mail.ru',
-        port: process.env.PORT ? parseInt(process.env.PORT) : 25,
-        username: 'yapople',
-        password: 'yapopleyapopleyapopleyapople'
-      };
-      return client = new Client(options);
-    });
+    var options;
+    options = {
+      hostname: process.env.HOSTNAME ? process.env.HOSTNAME : 'pop.mail.ru',
+      port: process.env.PORT ? parseInt(process.env.PORT) : 110,
+      username: 'yapople',
+      password: 'yapopleyapopleyapopleyapople'
+    };
     return describe('connect', function() {
-      return it('should connect to the existing server', function(done) {
+      it('should connect to the existing server', function(done) {
+        var client;
+        client = new Client(options);
         return client.connect(function(err, data) {
           assert.equal(err, null);
-          client.login();
           return done();
+        });
+      });
+      return it('should not login to TLS server', function(done) {
+        var client;
+        client = new Client(options);
+        return client.connect(function(err, data) {
+          assert.equal(err, null);
+          return client.login(function(err, data) {
+            assert.notEqual(err, null);
+            assert.equal(err, 'POP3 is available only with SSL or TLS connection enabled');
+            return done();
+          });
         });
       });
     });
