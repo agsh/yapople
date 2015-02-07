@@ -22,7 +22,7 @@
   ],
   "license": "MIT",
   "engines": {
-    "node": ">=0.6"
+    "node": ">=0.12"
   },
   "devDependencies": {
     "coveralls": ">=2.11.2",
