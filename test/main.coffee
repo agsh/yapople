@@ -1,7 +1,30 @@
 Client = (require '../lib/yapople').Client
 assert = require 'assert'
+nodemailer = require 'nodemailer'
 
 describe 'POP3 client tests', () ->
+  this.timeout 20000
+  before (done) ->
+    transporter = nodemailer.createTransport {
+      service: 'Mail.ru'
+      auth: {
+        user: 'yapople@mail.ru'
+        pass: 'yapopleyapopleyapopleyapople'
+      }
+    }
+    mailOptions = {
+      from: 'yapople@mail.ru'
+      to: 'yapople@mail.ru'
+      subject: 'Hello ✔'
+      text: 'Hello world ✔'
+      html: '<b>Hello world ✔</b>'
+    }
+    transporter.sendMail mailOptions, (error, info) ->
+      if error
+        console.log error
+      else
+        done()
+
   options = {
     hostname: 'pop.mail.ru'
     port: 110
@@ -24,7 +47,6 @@ describe 'POP3 client tests', () ->
         client.disconnect()
         done()
 
-    this.timeout(50000);
     it 'should not login to TLS server without tls option', (done) ->
       client = new Client options
       client.connect (err, data) ->
@@ -45,7 +67,6 @@ describe 'POP3 client tests', () ->
           client.disconnect()
           done()
 
-  this.timeout(20000);
   describe 'stat command', () ->
     it 'return message stat count', (done) ->
       client = new Client tlsOptions
@@ -59,7 +80,6 @@ describe 'POP3 client tests', () ->
             client.disconnect()
             done()
 
-  this.timeout(20000);
   describe 'list command', () ->
     it 'return message list count', (done) ->
       client = new Client tlsOptions
