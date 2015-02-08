@@ -46,7 +46,7 @@ describe 'POP3 client tests', () ->
           done()
 
   describe 'stat command', () ->
-    it 'return message count', (done) ->
+    it 'return message stat count', (done) ->
       client = new Client tlsOptions
       client.debug = true
       client.connect (err, data) ->
@@ -60,9 +60,8 @@ describe 'POP3 client tests', () ->
             done()
 
   describe 'list command', () ->
-    it 'return message count', (done) ->
+    it 'return message list count', (done) ->
       client = new Client tlsOptions
-      client.debug = true
       client.connect (err, data) ->
         assert.equal err, null
         client.login (err, data) ->
