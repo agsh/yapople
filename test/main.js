@@ -21,7 +21,7 @@
       username: 'yapople',
       password: 'yapopleyapopleyapopleyapople'
     };
-    return describe('connect', function() {
+    describe('connect', function() {
       it('should connect to the existing server', function(done) {
         var client;
         client = new Client(options);
@@ -52,8 +52,47 @@
           assert.equal(err, null);
           return client.login(function(err, data) {
             assert.equal(err, null);
+            assert.equal(data, 'Welcome!');
             client.disconnect();
             return done();
+          });
+        });
+      });
+    });
+    describe('stat command', function() {
+      return it('return message count', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        client.debug = true;
+        return client.connect(function(err, data) {
+          assert.equal(err, null);
+          return client.login(function(err, data) {
+            assert.equal(err, null);
+            return client.stat(function(err, data) {
+              assert.equal(err, null);
+              console.log(data);
+              client.disconnect();
+              return done();
+            });
+          });
+        });
+      });
+    });
+    return describe('list command', function() {
+      return it('return message count', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        client.debug = true;
+        return client.connect(function(err, data) {
+          assert.equal(err, null);
+          return client.login(function(err, data) {
+            assert.equal(err, null);
+            return client.list(function(err, data) {
+              assert.equal(err, null);
+              console.log(data);
+              client.disconnect();
+              return done();
+            });
           });
         });
       });

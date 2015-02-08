@@ -41,5 +41,34 @@ describe 'POP3 client tests', () ->
         assert.equal err, null
         client.login (err, data) ->
           assert.equal err, null
+          assert.equal data, 'Welcome!'
           client.disconnect()
           done()
+
+  describe 'stat command', () ->
+    it 'return message count', (done) ->
+      client = new Client tlsOptions
+      client.debug = true
+      client.connect (err, data) ->
+        assert.equal err, null
+        client.login (err, data) ->
+          assert.equal err, null
+          client.stat (err, data) ->
+            assert.equal err, null
+            console.log data
+            client.disconnect()
+            done()
+
+  describe 'list command', () ->
+    it 'return message count', (done) ->
+      client = new Client tlsOptions
+      client.debug = true
+      client.connect (err, data) ->
+        assert.equal err, null
+        client.login (err, data) ->
+          assert.equal err, null
+          client.list (err, data) ->
+            assert.equal err, null
+            console.log data
+            client.disconnect()
+            done()
