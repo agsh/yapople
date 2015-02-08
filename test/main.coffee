@@ -45,6 +45,7 @@ describe 'POP3 client tests', () ->
           client.disconnect()
           done()
 
+  this.timeout(10000);
   describe 'stat command', () ->
     it 'return message stat count', (done) ->
       client = new Client tlsOptions
@@ -59,6 +60,7 @@ describe 'POP3 client tests', () ->
             client.disconnect()
             done()
 
+  this.timeout(10000);
   describe 'list command', () ->
     it 'return message list count', (done) ->
       client = new Client tlsOptions
