@@ -59,11 +59,11 @@
         });
       });
     });
+    this.timeout(20000);
     describe('stat command', function() {
-      return it('return message count', function(done) {
+      return it('return message stat count', function(done) {
         var client;
         client = new Client(tlsOptions);
-        client.debug = true;
         return client.connect(function(err, data) {
           assert.equal(err, null);
           return client.login(function(err, data) {
@@ -78,11 +78,11 @@
         });
       });
     });
+    this.timeout(20000);
     return describe('list command', function() {
-      return it('return message count', function(done) {
+      return it('return message list count', function(done) {
         var client;
         client = new Client(tlsOptions);
-        client.debug = true;
         return client.connect(function(err, data) {
           assert.equal(err, null);
           return client.login(function(err, data) {
