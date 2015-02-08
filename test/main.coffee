@@ -3,14 +3,14 @@ assert = require 'assert'
 
 describe 'POP3 client tests', () ->
   options = {
-    hostname: if process.env.HOSTNAME then process.env.HOSTNAME else 'pop.mail.ru'
-    port: if process.env.PORT then parseInt(process.env.PORT) else 110
+    hostname: 'pop.mail.ru'
+    port: 110
     username: 'yapople'
     password: 'yapopleyapopleyapopleyapople'
   }
   tlsOptions = {
-    hostname: if process.env.HOSTNAME then process.env.HOSTNAME else 'pop.mail.ru'
-    port: if process.env.PORT then parseInt(process.env.PORT) else 995
+    hostname: 'pop.mail.ru'
+    port: 995
     tls: true
     username: 'yapople'
     password: 'yapopleyapopleyapopleyapople'

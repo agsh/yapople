@@ -9,14 +9,14 @@
   describe('POP3 client tests', function() {
     var options, tlsOptions;
     options = {
-      hostname: process.env.HOSTNAME ? process.env.HOSTNAME : 'pop.mail.ru',
-      port: process.env.PORT ? parseInt(process.env.PORT) : 110,
+      hostname: 'pop.mail.ru',
+      port: 110,
       username: 'yapople',
       password: 'yapopleyapopleyapopleyapople'
     };
     tlsOptions = {
-      hostname: process.env.HOSTNAME ? process.env.HOSTNAME : 'pop.mail.ru',
-      port: process.env.PORT ? parseInt(process.env.PORT) : 995,
+      hostname: 'pop.mail.ru',
+      port: 995,
       tls: true,
       username: 'yapople',
       password: 'yapopleyapopleyapopleyapople'
