@@ -5,6 +5,7 @@ nodemailer = require 'nodemailer'
 describe 'POP3 client tests', () ->
   this.timeout 20000
   before (done) ->
+    return done()
     transporter = nodemailer.createTransport {
       service: 'Mail.ru'
       auth: {
@@ -33,7 +34,7 @@ describe 'POP3 client tests', () ->
   }
   tlsOptions = {
     hostname: 'pop.mail.ru'
-    port: 995
+    port:  995
     tls: true
     username: 'yapople'
     password: 'yapopleyapopleyapopleyapople'
@@ -68,7 +69,7 @@ describe 'POP3 client tests', () ->
           done()
 
   describe 'stat command', () ->
-    it 'return message stat count', (done) ->
+    it 'returns message stat count', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
         assert.equal err, null
@@ -76,12 +77,12 @@ describe 'POP3 client tests', () ->
           assert.equal err, null
           client.stat (err, data) ->
             assert.equal err, null
-            console.log data
+            # console.log data
             client.disconnect()
             done()
 
   describe 'list command', () ->
-    it 'return message list count', (done) ->
+    it 'returns message list count', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
         assert.equal err, null
@@ -89,6 +90,33 @@ describe 'POP3 client tests', () ->
           assert.equal err, null
           client.list (err, data) ->
             assert.equal err, null
-            console.log data
+            # console.log data
             client.disconnect()
             done()
+
+  describe 'retr command', () ->
+    it 'should return message body for known message', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        assert.equal err, null
+        client.login (err, data) ->
+          assert.equal err, null
+          client.retr 1, (err, data) ->
+            assert.equal err, null
+            client.disconnect()
+            done()
+
+    it 'should return an error for unknown message', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        assert.equal err, null
+        client.login (err, data) ->
+          assert.equal err, null
+          client.retr 666, (err, data) ->
+            assert.notEqual err, null
+            client.disconnect()
+            done()
+
+
+
+  # TODO command sequence test
