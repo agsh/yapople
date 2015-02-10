@@ -136,7 +136,7 @@
           });
         });
       });
-      return it('should return an error for unknown message', function(done) {
+      it('should return an error for unknown message', function(done) {
         var client;
         client = new Client(tlsOptions);
         return client.connect(function(err, data) {
@@ -145,6 +145,24 @@
             assert.equal(err, null);
             return client.retr(666, function(err, data) {
               assert.notEqual(err, null);
+              client.disconnect();
+              return done();
+            });
+          });
+        });
+      });
+      describe('retr command', function() {});
+      return it('should return parsed message when using mailparser', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        client.mailparser = true;
+        return client.connect(function(err, data) {
+          assert.equal(err, null);
+          return client.login(function(err, data) {
+            assert.equal(err, null);
+            return client.retr(1, function(err, data) {
+              assert.equal(err, null);
+              console.log(data);
               client.disconnect();
               return done();
             });

@@ -117,6 +117,18 @@ describe 'POP3 client tests', () ->
             client.disconnect()
             done()
 
-
+    describe 'retr command', () ->
+    it 'should return parsed message when using mailparser', (done) ->
+      client = new Client tlsOptions
+      client.mailparser = true
+      client.connect (err, data) ->
+        assert.equal err, null
+        client.login (err, data) ->
+          assert.equal err, null
+          client.retr 1, (err, data) ->
+            assert.equal err, null
+            console.log data
+            client.disconnect()
+            done()
 
   # TODO command sequence test
