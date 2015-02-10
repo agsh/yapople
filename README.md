@@ -1,7 +1,7 @@
 # yapople
 Yet another POP3 library
 
-[![Build Status](https://travis-ci.org/agsh/onvif.png)](https://travis-ci.org/agsh/onvif)
+[![Build Status](https://travis-ci.org/agsh/yapople.png)](https://travis-ci.org/agsh/yapople)
 [![Coverage Status](https://coveralls.io/repos/agsh/yapople/badge.svg?branch=master)](https://coveralls.io/r/agsh/yapople?branch=master)
 
 Uses the last TLS Api (since crypto.createCredentials is deprecated),

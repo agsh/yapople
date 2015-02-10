@@ -154,15 +154,20 @@
       describe('retr command', function() {});
       return it('should return parsed message when using mailparser', function(done) {
         var client;
+        tlsOptions.mailparser = true;
         client = new Client(tlsOptions);
-        client.mailparser = true;
         return client.connect(function(err, data) {
           assert.equal(err, null);
           return client.login(function(err, data) {
             assert.equal(err, null);
             return client.retr(1, function(err, data) {
               assert.equal(err, null);
-              console.log(data);
+              assert.ok(data.text);
+              if (!data.subject) {
+                console.log(data);
+              }
+              assert.ok(data.subject);
+              assert.ok(data.headers);
               client.disconnect();
               return done();
             });
