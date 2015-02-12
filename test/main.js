@@ -9,11 +9,11 @@
   nodemailer = require('nodemailer');
 
   describe('POP3 client tests', function() {
-    var options, tlsOptions;
+    var count, options, tlsOptions;
     this.timeout(20000);
+    count = 0;
     before(function(done) {
       var mailOptions, transporter;
-      return done();
       transporter = nodemailer.createTransport({
         service: 'Mail.ru',
         auth: {
@@ -140,9 +140,7 @@
         var client;
         client = new Client(tlsOptions);
         return client.connect(function(err, data) {
-          assert.equal(err, null);
           return client.login(function(err, data) {
-            assert.equal(err, null);
             return client.retr(1, function(err, data) {
               assert.equal(err, null);
               client.disconnect();
@@ -155,9 +153,7 @@
         var client;
         client = new Client(tlsOptions);
         return client.connect(function(err, data) {
-          assert.equal(err, null);
           return client.login(function(err, data) {
-            assert.equal(err, null);
             return client.retr(666, function(err, data) {
               assert.notEqual(err, null);
               client.disconnect();
@@ -173,9 +169,7 @@
         tlsOptions.mailparser = true;
         client = new Client(tlsOptions);
         return client.connect(function(err, data) {
-          assert.equal(err, null);
           return client.login(function(err, data) {
-            assert.equal(err, null);
             return client.retr(1, function(err, data) {
               assert.equal(err, null);
               assert.ok(data.text);
@@ -191,8 +185,37 @@
         });
       });
     });
-    return describe('count command', function() {
+    describe('count command', function() {
       return it('should return message count', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          return client.login(function(err, data) {
+            return client.count(function(err, data) {
+              assert.equal(err, null);
+              assert.ok(data >= 0);
+              count = data;
+              client.disconnect();
+              return done();
+            });
+          });
+        });
+      });
+    });
+    return describe('delete command', function() {
+      it('should mark last message as deleted', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          return client.login(function(err, data) {
+            return client.dele(count, function(err, data) {
+              assert.equal(err, null);
+              return client.quit(done);
+            });
+          });
+        });
+      });
+      return it('should be deleted after the end of transaction', function(done) {
         var client;
         client = new Client(tlsOptions);
         return client.connect(function(err, data) {
@@ -201,7 +224,8 @@
             assert.equal(err, null);
             return client.count(function(err, data) {
               assert.equal(err, null);
-              assert.ok(data >= 0);
+              assert.equal(data, count - 1);
+              count = data;
               client.disconnect();
               return done();
             });

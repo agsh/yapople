@@ -4,8 +4,8 @@ nodemailer = require 'nodemailer'
 
 describe 'POP3 client tests', () ->
   this.timeout 20000
+  count = 0
   before (done) ->
-    return done()
     transporter = nodemailer.createTransport {
       service: 'Mail.ru'
       auth: {
@@ -106,9 +106,7 @@ describe 'POP3 client tests', () ->
     it 'should return message body for known message', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        assert.equal err, null
         client.login (err, data) ->
-          assert.equal err, null
           client.retr 1, (err, data) ->
             assert.equal err, null
             client.disconnect()
@@ -117,22 +115,19 @@ describe 'POP3 client tests', () ->
     it 'should return an error for unknown message', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        assert.equal err, null
         client.login (err, data) ->
-          assert.equal err, null
           client.retr 666, (err, data) ->
             assert.notEqual err, null
             client.disconnect()
             done()
 
   describe 'retr command', () ->
+
     it 'should return parsed message when using mailparser', (done) ->
       tlsOptions.mailparser = true
       client = new Client tlsOptions
       client.connect (err, data) ->
-        assert.equal err, null
         client.login (err, data) ->
-          assert.equal err, null
           client.retr 1, (err, data) ->
             assert.equal err, null
             assert.ok data.text
@@ -146,12 +141,34 @@ describe 'POP3 client tests', () ->
     it 'should return message count', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
+        client.login (err, data) ->
+          client.count (err, data) ->
+            assert.equal err, null
+            assert.ok data >= 0
+            count = data
+            client.disconnect()
+            done()
+
+  describe 'delete command', () ->
+
+    it 'should mark last message as deleted', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        client.login (err, data) ->
+          client.dele count, (err, data) ->
+            assert.equal err, null
+            client.quit(done)
+
+    it 'should be deleted after the end of transaction', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
         assert.equal err, null
         client.login (err, data) ->
           assert.equal err, null
           client.count (err, data) ->
             assert.equal err, null
-            assert.ok data >= 0
+            assert.equal data, count - 1
+            count = data
             client.disconnect()
             done()
 
