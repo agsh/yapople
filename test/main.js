@@ -104,7 +104,7 @@
       });
     });
     describe('list command', function() {
-      return it('returns message list count', function(done) {
+      it('returns message list count', function(done) {
         var client;
         client = new Client(tlsOptions);
         return client.connect(function(err, data) {
@@ -119,8 +119,23 @@
           });
         });
       });
+      return it('returns info about message', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          assert.equal(err, null);
+          return client.login(function(err, data) {
+            assert.equal(err, null);
+            return client.list(1, function(err, data) {
+              assert.equal(err, null);
+              client.disconnect();
+              return done();
+            });
+          });
+        });
+      });
     });
-    return describe('retr command', function() {
+    describe('retr command', function() {
       it('should return message body for known message', function(done) {
         var client;
         client = new Client(tlsOptions);
@@ -136,7 +151,7 @@
           });
         });
       });
-      it('should return an error for unknown message', function(done) {
+      return it('should return an error for unknown message', function(done) {
         var client;
         client = new Client(tlsOptions);
         return client.connect(function(err, data) {
@@ -151,7 +166,8 @@
           });
         });
       });
-      describe('retr command', function() {});
+    });
+    describe('retr command', function() {
       return it('should return parsed message when using mailparser', function(done) {
         var client;
         tlsOptions.mailparser = true;
@@ -168,6 +184,24 @@
               }
               assert.ok(data.subject);
               assert.ok(data.headers);
+              client.disconnect();
+              return done();
+            });
+          });
+        });
+      });
+    });
+    return describe('count command', function() {
+      return it('should return message count', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          assert.equal(err, null);
+          return client.login(function(err, data) {
+            assert.equal(err, null);
+            return client.count(function(err, data) {
+              assert.equal(err, null);
+              assert.ok(data >= 0);
               client.disconnect();
               return done();
             });

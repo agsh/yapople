@@ -77,7 +77,6 @@ describe 'POP3 client tests', () ->
           assert.equal err, null
           client.stat (err, data) ->
             assert.equal err, null
-            # console.log data
             client.disconnect()
             done()
 
@@ -90,7 +89,16 @@ describe 'POP3 client tests', () ->
           assert.equal err, null
           client.list (err, data) ->
             assert.equal err, null
-            # console.log data
+            client.disconnect()
+            done()
+    it 'returns info about message', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        assert.equal err, null
+        client.login (err, data) ->
+          assert.equal err, null
+          client.list 1, (err, data) ->
+            assert.equal err, null
             client.disconnect()
             done()
 
@@ -117,7 +125,7 @@ describe 'POP3 client tests', () ->
             client.disconnect()
             done()
 
-    describe 'retr command', () ->
+  describe 'retr command', () ->
     it 'should return parsed message when using mailparser', (done) ->
       tlsOptions.mailparser = true
       client = new Client tlsOptions
@@ -131,6 +139,19 @@ describe 'POP3 client tests', () ->
             console.log data if not data.subject
             assert.ok data.subject
             assert.ok data.headers
+            client.disconnect()
+            done()
+
+  describe 'count command', () ->
+    it 'should return message count', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        assert.equal err, null
+        client.login (err, data) ->
+          assert.equal err, null
+          client.count (err, data) ->
+            assert.equal err, null
+            assert.ok data >= 0
             client.disconnect()
             done()
 
