@@ -169,8 +169,8 @@ describe 'POP3 client tests', () ->
             assert.equal err, null
             assert.equal data, count - 1
             count = data
-            client.disconnect()
-            done()
+            client.disconnect () ->
+              done()
 
   describe 'rset command', () ->
     it 'should mark last message as deleted, then reset', (done) ->
@@ -195,6 +195,15 @@ describe 'POP3 client tests', () ->
             client.disconnect()
             done()
 
-
+  describe 'connect', () ->
+    it 'should properly connect after disconnection', (done) ->
+      client = new Client options
+      client.connect (err) ->
+        assert.equal err, null
+        client.disconnect (err) ->
+          assert.equal err, null
+          client.connect (err) ->
+            assert.equal err, null
+            done()
 
   # TODO command sequence test

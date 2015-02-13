@@ -226,14 +226,15 @@
               assert.equal(err, null);
               assert.equal(data, count - 1);
               count = data;
-              client.disconnect();
-              return done();
+              return client.disconnect(function() {
+                return done();
+              });
             });
           });
         });
       });
     });
-    return describe('rset command', function() {
+    describe('rset command', function() {
       it('should mark last message as deleted, then reset', function(done) {
         var client;
         client = new Client(tlsOptions);
@@ -260,6 +261,22 @@
               assert.equal(err, null);
               assert.equal(data, count);
               client.disconnect();
+              return done();
+            });
+          });
+        });
+      });
+    });
+    return describe('connect', function() {
+      return it('should properly connect after disconnection', function(done) {
+        var client;
+        client = new Client(options);
+        return client.connect(function(err) {
+          assert.equal(err, null);
+          return client.disconnect(function(err) {
+            assert.equal(err, null);
+            return client.connect(function(err) {
+              assert.equal(err, null);
               return done();
             });
           });
