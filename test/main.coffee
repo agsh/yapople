@@ -20,7 +20,7 @@ describe 'POP3 client tests', () ->
       text: 'Hello world ✔'
       html: '<b>Hello world ✔</b>'
     }
-    transporter.sendMail mailOptions, (error, info) ->
+    transporter.sendMail mailOptions, (error) ->
       if error
         console.log error
       else
@@ -43,7 +43,7 @@ describe 'POP3 client tests', () ->
   describe 'connect', () ->
     it 'should connect to the existing server', (done) ->
       client = new Client options
-      client.connect (err, data) ->
+      client.connect (err) ->
         assert.equal err, null
         client.disconnect()
         done()
@@ -149,7 +149,7 @@ describe 'POP3 client tests', () ->
             client.disconnect()
             done()
 
-  describe 'delete command', () ->
+  describe 'dele command', () ->
 
     it 'should mark last message as deleted', (done) ->
       client = new Client tlsOptions
@@ -171,5 +171,30 @@ describe 'POP3 client tests', () ->
             count = data
             client.disconnect()
             done()
+
+  describe 'rset command', () ->
+    it 'should mark last message as deleted, then reset', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        client.login (err, data) ->
+          client.dele count, (err, data) ->
+            assert.equal err, null
+            client.rset (err, data) ->
+              assert.equal err, null
+              client.quit(done)
+
+    it 'should not be deleted after the end of transaction', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        assert.equal err, null
+        client.login (err, data) ->
+          assert.equal err, null
+          client.count (err, data) ->
+            assert.equal err, null
+            assert.equal data, count
+            client.disconnect()
+            done()
+
+
 
   # TODO command sequence test

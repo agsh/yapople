@@ -28,7 +28,7 @@
         text: 'Hello world ✔',
         html: '<b>Hello world ✔</b>'
       };
-      return transporter.sendMail(mailOptions, function(error, info) {
+      return transporter.sendMail(mailOptions, function(error) {
         if (error) {
           return console.log(error);
         } else {
@@ -53,7 +53,7 @@
       it('should connect to the existing server', function(done) {
         var client;
         client = new Client(options);
-        return client.connect(function(err, data) {
+        return client.connect(function(err) {
           assert.equal(err, null);
           client.disconnect();
           return done();
@@ -202,7 +202,7 @@
         });
       });
     });
-    return describe('delete command', function() {
+    describe('dele command', function() {
       it('should mark last message as deleted', function(done) {
         var client;
         client = new Client(tlsOptions);
@@ -226,6 +226,39 @@
               assert.equal(err, null);
               assert.equal(data, count - 1);
               count = data;
+              client.disconnect();
+              return done();
+            });
+          });
+        });
+      });
+    });
+    return describe('rset command', function() {
+      it('should mark last message as deleted, then reset', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          return client.login(function(err, data) {
+            return client.dele(count, function(err, data) {
+              assert.equal(err, null);
+              return client.rset(function(err, data) {
+                assert.equal(err, null);
+                return client.quit(done);
+              });
+            });
+          });
+        });
+      });
+      return it('should not be deleted after the end of transaction', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          assert.equal(err, null);
+          return client.login(function(err, data) {
+            assert.equal(err, null);
+            return client.count(function(err, data) {
+              assert.equal(err, null);
+              assert.equal(data, count);
               client.disconnect();
               return done();
             });
