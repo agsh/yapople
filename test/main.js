@@ -10,7 +10,7 @@
 
   describe('POP3 client tests', function() {
     var count, options, tlsOptions;
-    this.timeout(20000);
+    this.timeout(120000);
     count = 0;
     before(function(done) {
       var mailOptions, transporter;
