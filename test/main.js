@@ -55,8 +55,7 @@
         client = new Client(options);
         return client.connect(function(err) {
           assert.equal(err, null);
-          client.disconnect();
-          return done();
+          return client.disconnect(done);
         });
       });
       it('should not login to TLS server without tls option', function(done) {
@@ -67,7 +66,6 @@
           return client.login(function(err, data) {
             assert.notEqual(err, null);
             assert.equal(err, 'POP3 is available only with SSL or TLS connection enabled');
-            client.disconnect();
             return done();
           });
         });
@@ -80,8 +78,7 @@
           return client.login(function(err, data) {
             assert.equal(err, null);
             assert.equal(data, 'Welcome!');
-            client.disconnect();
-            return done();
+            return client.disconnect(done);
           });
         });
       });
@@ -96,8 +93,7 @@
             assert.equal(err, null);
             return client.stat(function(err, data) {
               assert.equal(err, null);
-              client.disconnect();
-              return done();
+              return client.disconnect(done);
             });
           });
         });
@@ -113,7 +109,7 @@
             assert.equal(err, null);
             return client.list(function(err, data) {
               assert.equal(err, null);
-              client.disconnect();
+              client.disconnect;
               return done();
             });
           });
@@ -143,8 +139,7 @@
           return client.login(function(err, data) {
             return client.retr(1, function(err, data) {
               assert.equal(err, null);
-              client.disconnect();
-              return done();
+              return client.disconnect(done);
             });
           });
         });
@@ -156,8 +151,7 @@
           return client.login(function(err, data) {
             return client.retr(666, function(err, data) {
               assert.notEqual(err, null);
-              client.disconnect();
-              return done();
+              return client.disconnect(done);
             });
           });
         });
@@ -178,8 +172,7 @@
               }
               assert.ok(data.subject);
               assert.ok(data.headers);
-              client.disconnect();
-              return done();
+              return client.disconnect(done);
             });
           });
         });
@@ -195,8 +188,7 @@
               assert.equal(err, null);
               assert.ok(data >= 0);
               count = data;
-              client.disconnect();
-              return done();
+              return client.disconnect(done);
             });
           });
         });
@@ -226,9 +218,7 @@
               assert.equal(err, null);
               assert.equal(data, count - 1);
               count = data;
-              return client.disconnect(function() {
-                return done();
-              });
+              return client.disconnect(done);
             });
           });
         });
@@ -260,8 +250,7 @@
             return client.count(function(err, data) {
               assert.equal(err, null);
               assert.equal(data, count);
-              client.disconnect();
-              return done();
+              return client.disconnect(done);
             });
           });
         });
@@ -286,12 +275,11 @@
         client = new Client(tlsOptions);
         return client.connect(function(err, data) {
           return client.login(function(err, data) {
-            return client.retrieve([1, 2], function(err, data) {
+            return client.retrieve([1, 2, 3, 4, 5, 6], function(err, data) {
               assert.equal(err, null);
               assert.ok(Array.isArray(data));
-              assert.equal(data.length, 2);
-              console.log(data);
-              return done();
+              assert.equal(data.length, 6);
+              return client.disconnect(done);
             });
           });
         });
