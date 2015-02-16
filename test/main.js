@@ -267,16 +267,30 @@
         });
       });
     });
-    return describe('connect', function() {
+    describe('connect', function() {
       return it('should properly connect after disconnection', function(done) {
         var client;
-        client = new Client(options);
+        client = new Client(tlsOptions);
         return client.connect(function(err) {
           assert.equal(err, null);
           return client.disconnect(function(err) {
             assert.equal(err, null);
-            return client.connect(function(err) {
+            return done();
+          });
+        });
+      });
+    });
+    return describe('retrieve', function() {
+      return it('should properly works on array of message numbers', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          return client.login(function(err, data) {
+            return client.retrieve([1, 2], function(err, data) {
               assert.equal(err, null);
+              assert.ok(Array.isArray(data));
+              assert.equal(data.length, 2);
+              console.log(data);
               return done();
             });
           });
