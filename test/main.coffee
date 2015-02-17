@@ -16,15 +16,33 @@ describe 'POP3 client tests', () ->
     mailOptions = {
       from: 'yapople@mail.ru'
       to: 'yapople@mail.ru'
-      subject: 'Hello ✔'
-      text: 'Hello world ✔'
-      html: '<b>Hello world ✔</b>'
+      subject: 'msg 0 сообщение'
+      text: 'msg 0 сообщение'
+      html: '<b>Hello world ✔ Дорждынька</b>'
     }
     transporter.sendMail mailOptions, (error) ->
       if error
         console.log error
       else
-        done()
+        mailOptions.subject = 'msg 1 сообщение'
+        mailOptions.text = 'msg 1 сообщение'
+        transporter.sendMail mailOptions, (error) ->
+          if error
+            console.log error
+          else
+            mailOptions.subject = 'msg 2 сообщение'
+            mailOptions.text = 'msg 2 сообщение'
+            transporter.sendMail mailOptions, (error) ->
+              if error
+                console.log error
+              else
+                mailOptions.subject = 'msg 3 сообщение'
+                mailOptions.text = 'msg 3 сообщение'
+                transporter.sendMail mailOptions, (error) ->
+                  if error
+                    console.log error
+                  else
+                    done()
 
   options = {
     hostname: 'pop.mail.ru'
@@ -197,18 +215,30 @@ describe 'POP3 client tests', () ->
           done()
 
   describe 'retrieve', () ->
-
     it 'should properly works on array of message numbers', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
         client.login (err, data) ->
-          client.retrieve [1,2,3,4,5,6], (err, data) ->
+          client.retrieve [count, count - 1, count - 2], (err, data) ->
             assert.equal err, null
             assert.ok Array.isArray data
-            assert.equal data.length, 6
+            assert.equal data.length, 3
             # TODO message checking
             client.disconnect done
 
-
+  describe 'delete', () ->
+    it 'should properly delete an array of messages', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        client.login (err, data) ->
+          client.delete [count, count - 1, count - 2], (err, data) ->
+            assert.equal err, null
+            console.log data
+            # assert.ok Array.isArray data
+            # assert.equal data.length, 3
+            client.rset (err, data) ->
+              console.log data
+              assert.equal err, null
+              client.disconnect done
 
   # TODO command sequence test

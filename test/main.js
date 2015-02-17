@@ -24,15 +24,39 @@
       mailOptions = {
         from: 'yapople@mail.ru',
         to: 'yapople@mail.ru',
-        subject: 'Hello ✔',
-        text: 'Hello world ✔',
-        html: '<b>Hello world ✔</b>'
+        subject: 'msg 0 сообщение',
+        text: 'msg 0 сообщение',
+        html: '<b>Hello world ✔ Дорждынька</b>'
       };
       return transporter.sendMail(mailOptions, function(error) {
         if (error) {
           return console.log(error);
         } else {
-          return done();
+          mailOptions.subject = 'msg 1 сообщение';
+          mailOptions.text = 'msg 1 сообщение';
+          return transporter.sendMail(mailOptions, function(error) {
+            if (error) {
+              return console.log(error);
+            } else {
+              mailOptions.subject = 'msg 2 сообщение';
+              mailOptions.text = 'msg 2 сообщение';
+              return transporter.sendMail(mailOptions, function(error) {
+                if (error) {
+                  return console.log(error);
+                } else {
+                  mailOptions.subject = 'msg 3 сообщение';
+                  mailOptions.text = 'msg 3 сообщение';
+                  return transporter.sendMail(mailOptions, function(error) {
+                    if (error) {
+                      return console.log(error);
+                    } else {
+                      return done();
+                    }
+                  });
+                }
+              });
+            }
+          });
         }
       });
     });
@@ -269,17 +293,36 @@
         });
       });
     });
-    return describe('retrieve', function() {
+    describe('retrieve', function() {
       return it('should properly works on array of message numbers', function(done) {
         var client;
         client = new Client(tlsOptions);
         return client.connect(function(err, data) {
           return client.login(function(err, data) {
-            return client.retrieve([1, 2, 3, 4, 5, 6], function(err, data) {
+            return client.retrieve([count, count - 1, count - 2], function(err, data) {
               assert.equal(err, null);
               assert.ok(Array.isArray(data));
-              assert.equal(data.length, 6);
+              assert.equal(data.length, 3);
               return client.disconnect(done);
+            });
+          });
+        });
+      });
+    });
+    return describe('delete', function() {
+      return it('should properly delete an array of messages', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          return client.login(function(err, data) {
+            return client["delete"]([count, count - 1, count - 2], function(err, data) {
+              assert.equal(err, null);
+              console.log(data);
+              return client.rset(function(err, data) {
+                console.log(data);
+                assert.equal(err, null);
+                return client.disconnect(done);
+              });
             });
           });
         });
