@@ -204,7 +204,6 @@ describe 'POP3 client tests', () ->
             assert.equal err, null
             assert.equal data, count
             client.disconnect done
-
   describe 'connect', () ->
     it 'should properly connect after disconnection', (done) ->
       client = new Client tlsOptions
@@ -212,7 +211,11 @@ describe 'POP3 client tests', () ->
         assert.equal err, null
         client.disconnect (err) ->
           assert.equal err, null
-          done()
+          client.connect (err) ->
+            assert.equal err, null
+            client.disconnect (err) ->
+              assert.equal err, null
+              done()
 
   describe 'retrieve', () ->
     it 'should properly works on array of message numbers', (done) ->
@@ -233,12 +236,29 @@ describe 'POP3 client tests', () ->
         client.login (err, data) ->
           client.delete [count, count - 1, count - 2], (err, data) ->
             assert.equal err, null
-            console.log data
-            # assert.ok Array.isArray data
-            # assert.equal data.length, 3
+            assert.ok Array.isArray data
+            assert.equal data.length, 3
+            data.forEach (msg) ->
+              assert.ok /^message (\d)* deleted$/.test(msg)
             client.rset (err, data) ->
-              console.log data
               assert.equal err, null
               client.disconnect done
+
+  describe 'retrieveAndDeleteAll', () ->
+    it 'should return all messages and delete them', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        client.login (err, data) ->
+          client.retrieveAndDeleteAll (err, data) ->
+            assert.equal err, null
+            assert.ok Array.isArray data
+            assert.equal data.length, count
+            client.disconnect () ->
+              client.connect () ->
+                client.login () ->
+                  client.count (err, count) ->
+                    assert.equal err, null
+                    assert.equal count, 0
+                    client.disconnect done
 
   # TODO command sequence test

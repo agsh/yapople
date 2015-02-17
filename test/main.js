@@ -288,7 +288,13 @@
           assert.equal(err, null);
           return client.disconnect(function(err) {
             assert.equal(err, null);
-            return done();
+            return client.connect(function(err) {
+              assert.equal(err, null);
+              return client.disconnect(function(err) {
+                assert.equal(err, null);
+                return done();
+              });
+            });
           });
         });
       });
@@ -309,7 +315,7 @@
         });
       });
     });
-    return describe('delete', function() {
+    describe('delete', function() {
       return it('should properly delete an array of messages', function(done) {
         var client;
         client = new Client(tlsOptions);
@@ -317,11 +323,40 @@
           return client.login(function(err, data) {
             return client["delete"]([count, count - 1, count - 2], function(err, data) {
               assert.equal(err, null);
-              console.log(data);
+              assert.ok(Array.isArray(data));
+              assert.equal(data.length, 3);
+              data.forEach(function(msg) {
+                return assert.ok(/^message (\d)* deleted$/.test(msg));
+              });
               return client.rset(function(err, data) {
-                console.log(data);
                 assert.equal(err, null);
                 return client.disconnect(done);
+              });
+            });
+          });
+        });
+      });
+    });
+    return describe('retrieveAndDeleteAll', function() {
+      return it('should return all messages and delete them', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          return client.login(function(err, data) {
+            return client.retrieveAndDeleteAll(function(err, data) {
+              assert.equal(err, null);
+              assert.ok(Array.isArray(data));
+              assert.equal(data.length, count);
+              return client.disconnect(function() {
+                return client.connect(function() {
+                  return client.login(function() {
+                    return client.count(function(err, count) {
+                      assert.equal(err, null);
+                      assert.equal(count, 0);
+                      return client.disconnect(done);
+                    });
+                  });
+                });
               });
             });
           });
