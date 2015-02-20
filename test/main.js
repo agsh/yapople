@@ -300,7 +300,7 @@
       });
     });
     describe('retrieve', function() {
-      return it('should properly works on array of message numbers', function(done) {
+      it('should properly works on array of message numbers', function(done) {
         var client;
         client = new Client(tlsOptions);
         return client.connect(function(err, data) {
@@ -314,9 +314,21 @@
           });
         });
       });
+      return it('should return an error with bad arguments', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          return client.login(function(err, data) {
+            return client.retrieve([count, count + 1, count + 2], function(err, data) {
+              assert.notEqual(err, null);
+              return client.disconnect(done);
+            });
+          });
+        });
+      });
     });
     describe('delete', function() {
-      return it('should properly delete an array of messages', function(done) {
+      it('should properly delete an array of messages', function(done) {
         var client;
         client = new Client(tlsOptions);
         return client.connect(function(err, data) {
@@ -330,6 +342,61 @@
               });
               return client.rset(function(err, data) {
                 assert.equal(err, null);
+                return client.disconnect(done);
+              });
+            });
+          });
+        });
+      });
+      return it('should return an error with bad arguments and make a rset after all', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          return client.login(function(err, data) {
+            return client["delete"]([count, count + 1, count + 2], function(err, data) {
+              assert.notEqual(err, null);
+              return client.disconnect(function() {
+                return client.connect(function() {
+                  return client.login(function() {
+                    return client.count(function(err, cou) {
+                      assert.equal(cou, count);
+                      return client.disconnect(done);
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+    describe('retrieveAll', function() {
+      return it('should return all messages', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          return client.login(function(err, data) {
+            return client.retrieveAll(function(err, data) {
+              assert.equal(err, null);
+              assert.ok(Array.isArray(data));
+              assert.equal(data.length, count);
+              return client.disconnect(done);
+            });
+          });
+        });
+      });
+    });
+    describe('deleteAll', function() {
+      return it('should delete all messages', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          return client.login(function(err, data) {
+            return client.deleteAll(function(err, data) {
+              assert.equal(err, null);
+              assert.ok(Array.isArray(data));
+              assert.equal(data.length, count);
+              return client.rset(function() {
                 return client.disconnect(done);
               });
             });

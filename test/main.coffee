@@ -228,6 +228,13 @@ describe 'POP3 client tests', () ->
             assert.equal data.length, 3
             # TODO message checking
             client.disconnect done
+    it 'should return an error with bad arguments', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        client.login (err, data) ->
+          client.retrieve [count, count + 1, count + 2], (err, data) ->
+            assert.notEqual err, null
+            client.disconnect done
 
   describe 'delete', () ->
     it 'should properly delete an array of messages', (done) ->
@@ -242,6 +249,42 @@ describe 'POP3 client tests', () ->
               assert.ok /^message (\d)* deleted$/.test(msg)
             client.rset (err, data) ->
               assert.equal err, null
+              client.disconnect done
+
+    it 'should return an error with bad arguments and make a rset after all', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        client.login (err, data) ->
+          client.delete [count, count + 1, count + 2], (err, data) ->
+            assert.notEqual err, null
+            client.disconnect () ->
+              client.connect () ->
+                client.login () ->
+                  client.count (err, cou) ->
+                    assert.equal cou, count
+                    client.disconnect done
+
+  describe 'retrieveAll', () ->
+    it 'should return all messages', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        client.login (err, data) ->
+          client.retrieveAll (err, data) ->
+            assert.equal err, null
+            assert.ok Array.isArray data
+            assert.equal data.length, count
+            client.disconnect done
+
+  describe 'deleteAll', () ->
+    it 'should delete all messages', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        client.login (err, data) ->
+          client.deleteAll (err, data) ->
+            assert.equal err, null
+            assert.ok Array.isArray data
+            assert.equal data.length, count
+            client.rset () ->
               client.disconnect done
 
   describe 'retrieveAndDeleteAll', () ->
