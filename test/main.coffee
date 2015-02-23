@@ -59,40 +59,34 @@ describe 'POP3 client tests', () ->
   }
 
   describe 'connect', () ->
-    it 'should connect to the existing server', (done) ->
-      client = new Client options
+    ###it 'should return an error when connection refused', (done) ->
+      client = new Client {hostname: 'unknown'}
       client.connect (err) ->
-        assert.equal err, null
-        client.disconnect done
+        assert.notEqual err, null
+        done()###
 
     it 'should not login to TLS server without tls option', (done) ->
       client = new Client options
       client.connect (err, data) ->
-        assert.equal err, null
-        client.login (err, data) ->
-          assert.notEqual err, null
-          assert.equal err, 'POP3 is available only with SSL or TLS connection enabled'
-          done()
+        assert.notEqual err, null
+        assert.equal err, 'POP3 is available only with SSL or TLS connection enabled'
+        done()
 
     it 'should login to TLS server with tls option', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
         assert.equal err, null
-        client.login (err, data) ->
-          assert.equal err, null
-          assert.equal data, 'Welcome!'
-          client.disconnect done
+        assert.equal data, 'Welcome!'
+        client.disconnect done
 
   describe 'stat command', () ->
     it 'returns message stat count', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
         assert.equal err, null
-        client.login (err, data) ->
+        client.stat (err, data) ->
           assert.equal err, null
-          client.stat (err, data) ->
-            assert.equal err, null
-            client.disconnect done
+          client.disconnect done
 
   describe 'list command', () ->
 
@@ -100,40 +94,34 @@ describe 'POP3 client tests', () ->
       client = new Client tlsOptions
       client.connect (err, data) ->
         assert.equal err, null
-        client.login (err, data) ->
+        client.list (err, data) ->
           assert.equal err, null
-          client.list (err, data) ->
-            assert.equal err, null
-            client.disconnect
-            done()
+          client.disconnect
+          done()
 
     it 'returns info about message', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
         assert.equal err, null
-        client.login (err, data) ->
+        client.list 1, (err, data) ->
           assert.equal err, null
-          client.list 1, (err, data) ->
-            assert.equal err, null
-            client.disconnect()
-            done()
+          client.disconnect()
+          done()
 
   describe 'retr command', () ->
     it 'should return message body for known message', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        client.login (err, data) ->
-          client.retr 1, (err, data) ->
-            assert.equal err, null
-            client.disconnect done
+        client.retr 1, (err, data) ->
+          assert.equal err, null
+          client.disconnect done
 
     it 'should return an error for unknown message', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        client.login (err, data) ->
-          client.retr 666, (err, data) ->
-            assert.notEqual err, null
-            client.disconnect done
+        client.retr 666, (err, data) ->
+          assert.notEqual err, null
+          client.disconnect done
 
   describe 'retr command', () ->
 
@@ -141,69 +129,61 @@ describe 'POP3 client tests', () ->
       tlsOptions.mailparser = true
       client = new Client tlsOptions
       client.connect (err, data) ->
-        client.login (err, data) ->
-          client.retr 1, (err, data) ->
-            assert.equal err, null
-            assert.ok data.text
-            console.log data if not data.subject
-            assert.ok data.subject
-            assert.ok data.headers
-            client.disconnect done
+        client.retr 1, (err, data) ->
+          assert.equal err, null
+          assert.ok data.text
+          console.log data if not data.subject
+          assert.ok data.subject
+          assert.ok data.headers
+          client.disconnect done
 
   describe 'count command', () ->
     it 'should return message count', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        client.login (err, data) ->
-          client.count (err, data) ->
-            assert.equal err, null
-            assert.ok data >= 0
-            count = data
-            client.disconnect done
+        client.count (err, data) ->
+          assert.equal err, null
+          assert.ok data >= 0
+          count = data
+          client.disconnect done
 
   describe 'dele command', () ->
 
     it 'should mark last message as deleted', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        client.login (err, data) ->
-          client.dele count, (err, data) ->
-            assert.equal err, null
-            client.quit done
+        client.dele count, (err, data) ->
+          assert.equal err, null
+          client.quit done
 
     it 'should be deleted after the end of transaction', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
         assert.equal err, null
-        client.login (err, data) ->
+        client.count (err, data) ->
           assert.equal err, null
-          client.count (err, data) ->
-            assert.equal err, null
-            assert.equal data, count - 1
-            count = data
-            client.disconnect done
+          assert.equal data, count - 1
+          count = data
+          client.disconnect done
 
   describe 'rset command', () ->
     it 'should mark last message as deleted, then reset', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        client.login (err, data) ->
-          client.dele count, (err, data) ->
+        client.dele count, (err, data) ->
+          assert.equal err, null
+          client.rset (err, data) ->
             assert.equal err, null
-            client.rset (err, data) ->
-              assert.equal err, null
-              client.quit done
+            client.quit done
 
     it 'should not be deleted after the end of transaction', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
         assert.equal err, null
-        client.login (err, data) ->
+        client.count (err, data) ->
           assert.equal err, null
-          client.count (err, data) ->
-            assert.equal err, null
-            assert.equal data, count
-            client.disconnect done
+          assert.equal data, count
+          client.disconnect done
   describe 'connect', () ->
     it 'should properly connect after disconnection', (done) ->
       client = new Client tlsOptions
@@ -221,87 +201,80 @@ describe 'POP3 client tests', () ->
     it 'should properly works on array of message numbers', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        client.login (err, data) ->
-          client.retrieve [count, count - 1, count - 2], (err, data) ->
-            assert.equal err, null
-            assert.ok Array.isArray data
-            assert.equal data.length, 3
-            # TODO message checking
-            client.disconnect done
+        client.retrieve [count, count - 1, count - 2], (err, data) ->
+          assert.equal err, null
+          assert.ok Array.isArray data
+          assert.equal data.length, 3
+          # TODO message checking
+          client.disconnect done
     it 'should return an error with bad arguments', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        client.login (err, data) ->
-          client.retrieve [count, count + 1, count + 2], (err, data) ->
-            assert.notEqual err, null
-            client.disconnect done
+        client.retrieve [count, count + 1, count + 2], (err, data) ->
+          assert.notEqual err, null
+          client.disconnect done
 
   describe 'delete', () ->
     it 'should properly delete an array of messages', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        client.login (err, data) ->
-          client.delete [count, count - 1, count - 2], (err, data) ->
+        client.delete [count, count - 1, count - 2], (err, data) ->
+          assert.equal err, null
+          assert.ok Array.isArray data
+          assert.equal data.length, 3
+          data.forEach (msg) ->
+            assert.ok /^message (\d)* deleted$/.test(msg)
+          client.rset (err, data) ->
             assert.equal err, null
-            assert.ok Array.isArray data
-            assert.equal data.length, 3
-            data.forEach (msg) ->
-              assert.ok /^message (\d)* deleted$/.test(msg)
-            client.rset (err, data) ->
-              assert.equal err, null
-              client.disconnect done
+            client.disconnect done
 
     it 'should return an error with bad arguments and make a rset after all', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        client.login (err, data) ->
-          client.delete [count, count + 1, count + 2], (err, data) ->
-            assert.notEqual err, null
-            client.disconnect () ->
-              client.connect () ->
-                client.login () ->
-                  client.count (err, cou) ->
-                    assert.equal cou, count
-                    client.disconnect done
+        client.delete [count, count + 1, count + 2], (err, data) ->
+          assert.notEqual err, null
+          client.disconnect () ->
+            client.connect () ->
+              client.login () ->
+                client.count (err, cou) ->
+                  assert.equal cou, count
+                  client.disconnect done
 
   describe 'retrieveAll', () ->
     it 'should return all messages', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        client.login (err, data) ->
-          client.retrieveAll (err, data) ->
-            assert.equal err, null
-            assert.ok Array.isArray data
-            assert.equal data.length, count
-            client.disconnect done
+        client.retrieveAll (err, data) ->
+          assert.equal err, null
+          assert.ok Array.isArray data
+          assert.equal data.length, count
+          client.disconnect done
 
   describe 'deleteAll', () ->
     it 'should delete all messages', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        client.login (err, data) ->
-          client.deleteAll (err, data) ->
-            assert.equal err, null
-            assert.ok Array.isArray data
-            assert.equal data.length, count
-            client.rset () ->
-              client.disconnect done
+        client.deleteAll (err, data) ->
+          assert.equal err, null
+          assert.ok Array.isArray data
+          assert.equal data.length, count
+          client.rset () ->
+            client.disconnect done
 
   describe 'retrieveAndDeleteAll', () ->
     it 'should return all messages and delete them', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
-        client.login (err, data) ->
-          client.retrieveAndDeleteAll (err, data) ->
-            assert.equal err, null
-            assert.ok Array.isArray data
-            assert.equal data.length, count
-            client.disconnect () ->
-              client.connect () ->
-                client.login () ->
-                  client.count (err, count) ->
-                    assert.equal err, null
-                    assert.equal count, 0
-                    client.disconnect done
+        client.retrieveAndDeleteAll (err, data) ->
+          assert.equal err, null
+          assert.ok Array.isArray data
+          assert.equal data.length, count
+          client.disconnect () ->
+            client.connect () ->
+              client.login () ->
+                client.count (err, count) ->
+                  assert.equal err, null
+                  assert.equal count, 0
+                  client.disconnect done
 
   # TODO command sequence test
