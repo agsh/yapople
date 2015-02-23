@@ -81,6 +81,14 @@
           assert.notEqual err, null
           done()
        */
+      it('should not executes commands not being connected', function(done) {
+        var client;
+        client = new Client(options);
+        return client.list(function(err) {
+          assert.notEqual(err, null);
+          return done();
+        });
+      });
       it('should not login to TLS server without tls option', function(done) {
         var client;
         client = new Client(options);
@@ -316,11 +324,9 @@
             assert.notEqual(err, null);
             return client.disconnect(function() {
               return client.connect(function() {
-                return client.login(function() {
-                  return client.count(function(err, cou) {
-                    assert.equal(cou, count);
-                    return client.disconnect(done);
-                  });
+                return client.count(function(err, cou) {
+                  assert.equal(cou, count);
+                  return client.disconnect(done);
                 });
               });
             });
@@ -369,12 +375,10 @@
             assert.equal(data.length, count);
             return client.disconnect(function() {
               return client.connect(function() {
-                return client.login(function() {
-                  return client.count(function(err, count) {
-                    assert.equal(err, null);
-                    assert.equal(count, 0);
-                    return client.disconnect(done);
-                  });
+                return client.count(function(err, count) {
+                  assert.equal(err, null);
+                  assert.equal(count, 0);
+                  return client.disconnect(done);
                 });
               });
             });

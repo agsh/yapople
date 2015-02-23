@@ -65,6 +65,12 @@ describe 'POP3 client tests', () ->
         assert.notEqual err, null
         done()###
 
+    it 'should not executes commands not being connected', (done) ->
+      client = new Client options
+      client.list (err) ->
+        assert.notEqual err, null
+        done()
+
     it 'should not login to TLS server without tls option', (done) ->
       client = new Client options
       client.connect (err, data) ->
@@ -235,10 +241,9 @@ describe 'POP3 client tests', () ->
           assert.notEqual err, null
           client.disconnect () ->
             client.connect () ->
-              client.login () ->
-                client.count (err, cou) ->
-                  assert.equal cou, count
-                  client.disconnect done
+              client.count (err, cou) ->
+                assert.equal cou, count
+                client.disconnect done
 
   describe 'retrieveAll', () ->
     it 'should return all messages', (done) ->
@@ -271,10 +276,9 @@ describe 'POP3 client tests', () ->
           assert.equal data.length, count
           client.disconnect () ->
             client.connect () ->
-              client.login () ->
-                client.count (err, count) ->
-                  assert.equal err, null
-                  assert.equal count, 0
-                  client.disconnect done
+              client.count (err, count) ->
+                assert.equal err, null
+                assert.equal count, 0
+                client.disconnect done
 
   # TODO command sequence test
