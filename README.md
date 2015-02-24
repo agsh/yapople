@@ -34,6 +34,9 @@ putting somewhere event-listener functions to retrieve data.
 ## Installation
 `npm install yapople`
 
+## Tests
+`npm test`
+
 ## Constructor properties
 When you creates new Client object you should pass an object which describes connection properties.
 
@@ -54,22 +57,40 @@ When you creates new Client object you should pass an object which describes con
 Connect to the mailserver using `hostname` and `port`. Starts TLS connection if `tls` property is true.
 Then login into your mailbox using credentials properties `username` and `password`.
 
-### count({function} callback)
+### count(callback)
+- **callback** - __function(err, count)__
 Returns a count of the messages in the mailbox
 
-### retrieve({array<number>, number} what, {function} callback)
+### retrieve(what, callback)
+- **what** - __number or array of numbers__ - message number, or an array of message numbers
+- **callback** - __function(err, messages)__
 Retrieve a message/messages by its number/numbers.
 
-### retrieveAll({function} callback)
+### retrieveAll(callback)
+- **callback** - __function(err, messages)__
 Retrieve all messages in mailbox.
 
-### delete({array<number>, number} what, {function} callback)
+### delete(what, callback)
+- **what** - __number or array of numbers__ - message number, or an array of message numbers
+- **callback** - __function(err, messages)__
 Delete a message/messages by its number/numbers.
 If you delete several messages and get an error for some message, all you delete transaction will be reset.
 
-### deleteAll({function} callback)
+### deleteAll(callback)
+- **callback** - __function(err, statuses)__
 Delete all messages in mailbox.
 
-### retrieveAndDeleteAll({function} callback)
+### retrieveAndDeleteAll(callback)
+- **callback** - __function(err, messages)__
 Retrieve and delete all messages in mailbox. In a callback function you'll get an error message or an array of
 retrieved emails. If you get an error for some reason, all you delete transaction will be reset.
+
+### list(number, callback)
+- **number** - __number (optional)__ - message number
+- **callback** - __function(err, info)__
+Returns length of a message in octets. If no number passed, list returns an object contains message numbers as a keys
+and message lengths as a values
+
+### quit(callback)
+- **callback** - __function(err)__
+Finish current session and disconnect. All messages marked as deleted after this command will be erased.
