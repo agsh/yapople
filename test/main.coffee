@@ -64,20 +64,17 @@ describe 'POP3 client tests', () ->
       client.connect (err) ->
         assert.notEqual err, null
         done()###
-
     it 'should not executes commands not being connected', (done) ->
       client = new Client options
       client.list (err) ->
         assert.notEqual err, null
         done()
-
     it 'should not login to TLS server without tls option', (done) ->
       client = new Client options
       client.connect (err, data) ->
         assert.notEqual err, null
         assert.equal err, 'POP3 is available only with SSL or TLS connection enabled'
         done()
-
     it 'should login to TLS server with tls option', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
@@ -95,16 +92,15 @@ describe 'POP3 client tests', () ->
           client.disconnect done
 
   describe 'list command', () ->
-
     it 'returns message list count', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
         assert.equal err, null
         client.list (err, data) ->
           assert.equal err, null
+          assert.ok Object.keys(data).length >= 0
           client.disconnect
           done()
-
     it 'returns info about message', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
@@ -121,16 +117,12 @@ describe 'POP3 client tests', () ->
         client.retr 1, (err, data) ->
           assert.equal err, null
           client.disconnect done
-
     it 'should return an error for unknown message', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
         client.retr 666, (err, data) ->
           assert.notEqual err, null
           client.disconnect done
-
-  describe 'retr command', () ->
-
     it 'should return parsed message when using mailparser', (done) ->
       tlsOptions.mailparser = true
       client = new Client tlsOptions
@@ -154,14 +146,12 @@ describe 'POP3 client tests', () ->
           client.disconnect done
 
   describe 'dele command', () ->
-
     it 'should mark last message as deleted', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
         client.dele count, (err, data) ->
           assert.equal err, null
           client.quit done
-
     it 'should be deleted after the end of transaction', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
@@ -181,7 +171,6 @@ describe 'POP3 client tests', () ->
           client.rset (err, data) ->
             assert.equal err, null
             client.quit done
-
     it 'should not be deleted after the end of transaction', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
@@ -190,6 +179,7 @@ describe 'POP3 client tests', () ->
           assert.equal err, null
           assert.equal data, count
           client.disconnect done
+
   describe 'connect', () ->
     it 'should properly connect after disconnection', (done) ->
       client = new Client tlsOptions
@@ -233,7 +223,6 @@ describe 'POP3 client tests', () ->
           client.rset (err, data) ->
             assert.equal err, null
             client.disconnect done
-
     it 'should return an error with bad arguments and make a rset after all', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->
