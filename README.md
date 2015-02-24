@@ -10,18 +10,21 @@ example how to do this with `yapople`:
 
 ```javascript
 var Client = require('yapople').Client;
-new Client({
+var client = new Client({
   hostname: 'pop.mail.ru'
   port:  995
   tls: true
   mailparser: true
   username: 'username'
   password: 'password'
-}).connect().retrieveAll(function(err, messages) {
-  messages.forEach(function(message) {
-    console.log(message.subject);
-  });
-}).quit();
+}).connect(function() {
+  client.retrieveAll(function(err, messages) {
+    messages.forEach(function(message) {
+      console.log(message.subject);
+    });
+    client.quit();
+  })
+})
 ```
 
 Also this is a callback-driven and command-queued library instead of [poplib](https://github.com/ditesh/node-poplib)
@@ -53,44 +56,54 @@ When you creates new Client object you should pass an object which describes con
 
 ## Methods
 
-### connect
+### connect(callback)
+- **callback** - __function(err)__
+
 Connect to the mailserver using `hostname` and `port`. Starts TLS connection if `tls` property is true.
 Then login into your mailbox using credentials properties `username` and `password`.
 
 ### count(callback)
 - **callback** - __function(err, count)__
+
 Returns a count of the messages in the mailbox
 
 ### retrieve(what, callback)
 - **what** - __number or array of numbers__ - message number, or an array of message numbers
 - **callback** - __function(err, messages)__
+
 Retrieve a message/messages by its number/numbers.
 
 ### retrieveAll(callback)
 - **callback** - __function(err, messages)__
+
 Retrieve all messages in mailbox.
 
 ### delete(what, callback)
 - **what** - __number or array of numbers__ - message number, or an array of message numbers
 - **callback** - __function(err, messages)__
+
 Delete a message/messages by its number/numbers.
 If you delete several messages and get an error for some message, all you delete transaction will be reset.
 
 ### deleteAll(callback)
 - **callback** - __function(err, statuses)__
+
 Delete all messages in mailbox.
 
 ### retrieveAndDeleteAll(callback)
 - **callback** - __function(err, messages)__
+
 Retrieve and delete all messages in mailbox. In a callback function you'll get an error message or an array of
 retrieved emails. If you get an error for some reason, all you delete transaction will be reset.
 
 ### list(number, callback)
 - **number** - __number (optional)__ - message number
 - **callback** - __function(err, info)__
+
 Returns length of a message in octets. If no number passed, list returns an object contains message numbers as a keys
 and message lengths as a values
 
 ### quit(callback)
 - **callback** - __function(err)__
+
 Finish current session and disconnect. All messages marked as deleted after this command will be erased.
