@@ -1,6 +1,6 @@
 {
   "name": "yapople",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "Andrew D.Laptev <a.d.laptev@gmail.com>",
   "description": "Yet another POP3 library",
   "main": "lib/yapople.js",
@@ -18,8 +18,11 @@
     "mailparser": "^0.4.8"
   },
   "keywords": [
+    "email",
+    "e-mail",
     "mail",
-    "pop3"
+    "pop3",
+    "pop"
   ],
   "license": "MIT",
   "engines": {
