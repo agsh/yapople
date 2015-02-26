@@ -193,6 +193,42 @@ describe 'POP3 client tests', () ->
               assert.equal err, null
               done()
 
+  describe 'top', () ->
+    it 'should return an error for wrong message number', (done) ->
+      client = new Client tlsOptions
+      client.connect (err) ->
+        client.top 0, 0, (err, res) ->
+          assert.notEqual err, null
+          done()
+    it 'should return raw message headers', (done) ->
+      tlsOptions.mailparser = false
+      client = new Client tlsOptions
+      client.connect (err) ->
+        client.top 1, 0, (err, res) ->
+          assert.equal err, null
+          assert.equal typeof res, 'string'
+          done()
+    it 'should return message headers and body', (done) ->
+      tlsOptions.mailparser = false
+      client = new Client tlsOptions
+      client.connect (err) ->
+        client.top 1, 10, (err, res) ->
+          assert.equal err, null
+          assert.equal typeof res, 'string'
+          done()
+    it 'should return parsed message headers', (done) ->
+      tlsOptions.mailparser = true
+      client = new Client tlsOptions
+      client.connect (err) ->
+        client.top 1, 0, (err, res) ->
+          assert.equal err, null
+          assert.equal typeof res, 'object'
+          assert.ok res.subject
+          assert.ok res.from
+          assert.ok res.to
+          assert.ok res.date
+          done()
+
   describe 'retrieve', () ->
     it 'should properly works on array of message numbers', (done) ->
       client = new Client tlsOptions

@@ -272,6 +272,58 @@
         });
       });
     });
+    describe('top', function() {
+      it('should return an error for wrong message number', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err) {
+          return client.top(0, 0, function(err, res) {
+            assert.notEqual(err, null);
+            return done();
+          });
+        });
+      });
+      it('should return raw message headers', function(done) {
+        var client;
+        tlsOptions.mailparser = false;
+        client = new Client(tlsOptions);
+        return client.connect(function(err) {
+          return client.top(1, 0, function(err, res) {
+            assert.equal(err, null);
+            assert.equal(typeof res, 'string');
+            return done();
+          });
+        });
+      });
+      it('should return message headers and body', function(done) {
+        var client;
+        tlsOptions.mailparser = false;
+        client = new Client(tlsOptions);
+        return client.connect(function(err) {
+          return client.top(1, 10, function(err, res) {
+            assert.equal(err, null);
+            assert.equal(typeof res, 'string');
+            return done();
+          });
+        });
+      });
+      return it('should return parsed message headers', function(done) {
+        var client;
+        tlsOptions.mailparser = true;
+        client = new Client(tlsOptions);
+        return client.connect(function(err) {
+          return client.top(1, 0, function(err, res) {
+            assert.equal(err, null);
+            assert.equal(typeof res, 'object');
+            assert.ok(res.subject);
+            assert.ok(res.from);
+            assert.ok(res.to);
+            assert.ok(res.date);
+            return done();
+          });
+        });
+      });
+    });
     describe('retrieve', function() {
       it('should properly works on array of message numbers', function(done) {
         var client;
