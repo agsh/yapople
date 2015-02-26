@@ -199,7 +199,7 @@ describe 'POP3 client tests', () ->
       client.connect (err) ->
         client.top 0, 0, (err, res) ->
           assert.notEqual err, null
-          done()
+          client.disconnect done
     it 'should return raw message headers', (done) ->
       tlsOptions.mailparser = false
       client = new Client tlsOptions
@@ -207,7 +207,7 @@ describe 'POP3 client tests', () ->
         client.top 1, 0, (err, res) ->
           assert.equal err, null
           assert.equal typeof res, 'string'
-          done()
+          client.disconnect done
     it 'should return message headers and body', (done) ->
       tlsOptions.mailparser = false
       client = new Client tlsOptions
@@ -215,7 +215,7 @@ describe 'POP3 client tests', () ->
         client.top 1, 10, (err, res) ->
           assert.equal err, null
           assert.equal typeof res, 'string'
-          done()
+          client.disconnect done
     it 'should return parsed message headers', (done) ->
       tlsOptions.mailparser = true
       client = new Client tlsOptions
@@ -227,9 +227,16 @@ describe 'POP3 client tests', () ->
           assert.ok res.from
           assert.ok res.to
           assert.ok res.date
-          done()
+          client.disconnect done
 
   describe 'retrieve', () ->
+    it 'should properly works on message number', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        client.retrieve count, (err, data) ->
+          assert.equal err, null
+          assert.equal typeof data, 'object'
+          client.disconnect done
     it 'should properly works on array of message numbers', (done) ->
       client = new Client tlsOptions
       client.connect (err, data) ->

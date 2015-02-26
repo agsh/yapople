@@ -279,7 +279,7 @@
         return client.connect(function(err) {
           return client.top(0, 0, function(err, res) {
             assert.notEqual(err, null);
-            return done();
+            return client.disconnect(done);
           });
         });
       });
@@ -291,7 +291,7 @@
           return client.top(1, 0, function(err, res) {
             assert.equal(err, null);
             assert.equal(typeof res, 'string');
-            return done();
+            return client.disconnect(done);
           });
         });
       });
@@ -303,7 +303,7 @@
           return client.top(1, 10, function(err, res) {
             assert.equal(err, null);
             assert.equal(typeof res, 'string');
-            return done();
+            return client.disconnect(done);
           });
         });
       });
@@ -319,12 +319,23 @@
             assert.ok(res.from);
             assert.ok(res.to);
             assert.ok(res.date);
-            return done();
+            return client.disconnect(done);
           });
         });
       });
     });
     describe('retrieve', function() {
+      it('should properly works on message number', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          return client.retrieve(count, function(err, data) {
+            assert.equal(err, null);
+            assert.equal(typeof data, 'object');
+            return client.disconnect(done);
+          });
+        });
+      });
       it('should properly works on array of message numbers', function(done) {
         var client;
         client = new Client(tlsOptions);
