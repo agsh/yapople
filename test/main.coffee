@@ -89,6 +89,8 @@ describe 'POP3 client tests', () ->
         assert.equal err, null
         client.stat (err, data) ->
           assert.equal err, null
+          assert.equal typeof data.count, 'number'
+          assert.equal typeof data.length, 'number'
           client.disconnect done
 
   describe 'list command', () ->

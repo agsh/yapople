@@ -116,6 +116,8 @@
           assert.equal(err, null);
           return client.stat(function(err, data) {
             assert.equal(err, null);
+            assert.equal(typeof data.count, 'number');
+            assert.equal(typeof data.length, 'number');
             return client.disconnect(done);
           });
         });
