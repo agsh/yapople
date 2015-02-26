@@ -71,7 +71,8 @@ Returns a count of the messages in the mailbox
 - **what** - __number or array of numbers__ - message number, or an array of message numbers
 - **callback** - __function(err, messages)__
 
-Retrieve a message/messages by its number/numbers.
+Retrieve a message/messages by its number/numbers. If the `mailparser` argument is true returned messages will be parsed
+and looks like an objects. Otherwise it will be strings.
 
 ### retrieveAll(callback)
 - **callback** - __function(err, messages)__
@@ -84,6 +85,9 @@ Retrieve all messages in mailbox.
 
 Delete a message/messages by its number/numbers.
 If you delete several messages and get an error for some message, all you delete transaction will be reset.
+
+Note that if your connection to the server is broken at all then the messages will not actually be deleted.
+You need to cleanly disconnect from the mail server for this to happen.
 
 ### deleteAll(callback)
 - **callback** - __function(err, statuses)__
@@ -107,3 +111,31 @@ and message lengths as a values
 - **callback** - __function(err)__
 
 Finish current session and disconnect. All messages marked as deleted after this command will be erased.
+
+## Protocol methods
+
+### retr(what, callback)
+- **what** - __number or string__ - message number
+- **callback** - __function(err, message)__
+
+Retrieve full message by its number.
+
+### stat(callback)
+- **what** - __number or string__ - message number
+- **callback** - __function(err, stat)__
+
+Returns an `stat` object representing the number of messages currently in the mailbox (`count` property)
+and the size in bytes (`length` property).
+
+### top(number, linesCount, callback)
+- **number** - __number or string__ - message number
+- **linesCount** - __number or string__ - the number of lines of the message body you would like returned
+- **callback** - __function(err)__
+
+Retrieve part of the message including headers, or only headers.
+
+### dele(number, callback)
+- **number** - __number or string__ - message number
+- **callback** - __function(err, response)__
+
+Delete a message by its number.
