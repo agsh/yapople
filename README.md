@@ -139,3 +139,6 @@ Retrieve part of the message including headers, or only headers.
 - **callback** - __function(err, response)__
 
 Delete a message by its number.
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/agsh/yapople/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
