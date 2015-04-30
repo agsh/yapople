@@ -6,7 +6,7 @@ Yet another POP3 library
 
 The design propose of the library is simplicity. A lot of common tasks with you POP3 mailbox doesn't require knowledge of
 the eleven POP3 commands. You just want to retrieve some messages from your mailbox and that's all! So here is quick
-example how to do this with `yapople`:
+example how to do this with 'yapople':
 
 ```javascript
 var Client = require('yapople').Client;
@@ -32,7 +32,7 @@ So you can run methods in chain, don't think about already running command and g
 putting somewhere event-listener functions to retrieve data.
 
 > Uses the last TLS Api (since crypto.createCredentials is deprecated),
-> so it works only with then node.js v.0.12 or later.
+> so it works only with node.js v.0.12 or later.
 
 ## Installation
 `npm install yapople`
