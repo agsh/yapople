@@ -72,12 +72,14 @@ Returns a count of the messages in the mailbox
 - **callback** - __function(err, messages)__
 
 Retrieve a message/messages by its number/numbers. If the `mailparser` argument is true returned messages will be parsed
-and looks like an objects. Otherwise it will be strings.
+and looks like an objects. Otherwise it will be strings. Notice that results are sparse array with indexes representing
+message numbers. You can access message with its number like that `messages[number]` and use all HOF like this
+`messages.map(function(mail, num){ return [num, mail.subject]; })`
 
 ### retrieveAll(callback)
 - **callback** - __function(err, messages)__
 
-Retrieve all messages in mailbox.
+Retrieve all messages in mailbox. Result is a sparse array starting from 1.
 
 ### delete(what, callback)
 - **what** - __number or array of numbers__ - message number, or an array of message numbers
@@ -97,8 +99,9 @@ Delete all messages in mailbox.
 ### retrieveAndDeleteAll(callback)
 - **callback** - __function(err, messages)__
 
-Retrieve and delete all messages in mailbox. In a callback function you'll get an error message or an array of
-retrieved emails. If you get an error for some reason, all you delete transaction will be reset.
+Retrieve and delete all messages in mailbox. Result is a sparse array starting from 1.
+In a callback function you'll get an error message or an array of retrieved emails. 
+If you get an error for some reason, all you delete transaction will be reset.
 
 ### list(number, callback)
 - **number** - __number (optional)__ - message number
