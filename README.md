@@ -11,13 +11,14 @@ example how to do this with 'yapople':
 ```javascript
 var Client = require('yapople').Client;
 var client = new Client({
-  hostname: 'pop.mail.ru'
-  port:  995
-  tls: true
-  mailparser: true
-  username: 'username'
+  hostname: 'pop.mail.ru',
+  port:  995,
+  tls: true,
+  mailparser: true,
+  username: 'username',
   password: 'password'
-}).connect(function() {
+});
+client.connect(function() {
   client.retrieveAll(function(err, messages) {
     messages.forEach(function(message) {
       console.log(message.subject);
