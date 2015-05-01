@@ -30,5 +30,5 @@ node_modules
 #IDEA
 .idea
 
-# coffee tests
-test/*.coffee
+# tests mapping
+test/*.map
