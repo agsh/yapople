@@ -73,7 +73,7 @@ describe 'POP3 client tests', () ->
       client = new Client options
       client.connect (err, data) ->
         assert.notEqual err, null
-        assert.equal err, 'POP3 is available only with SSL or TLS connection enabled'
+        assert.equal err.message, 'POP3 is available only with SSL or TLS connection enabled'
         done()
     it 'should login to TLS server with tls option', (done) ->
       client = new Client tlsOptions
@@ -125,7 +125,7 @@ describe 'POP3 client tests', () ->
         client.retr 666, (err, data) ->
           assert.notEqual err, null
           client.disconnect done
-    it 'should return parsed message when using mailparser', (done) ->
+    it 'should return parsed message using mailparser', (done) ->
       tlsOptions.mailparser = true
       client = new Client tlsOptions
       client.connect (err, data) ->
@@ -208,7 +208,7 @@ describe 'POP3 client tests', () ->
       client.connect (err) ->
         client.top 1, 0, (err, res) ->
           assert.equal err, null
-          assert.equal typeof res, 'string'
+          assert.ok Buffer.isBuffer(res) # typeof res, 'string'
           client.disconnect done
     it 'should return message headers and body', (done) ->
       tlsOptions.mailparser = false
@@ -216,7 +216,7 @@ describe 'POP3 client tests', () ->
       client.connect (err) ->
         client.top 1, 10, (err, res) ->
           assert.equal err, null
-          assert.equal typeof res, 'string'
+          assert.ok Buffer.isBuffer(res) # typeof res, 'string'
           client.disconnect done
     it 'should return parsed message headers', (done) ->
       tlsOptions.mailparser = true
