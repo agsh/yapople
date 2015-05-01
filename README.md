@@ -74,7 +74,8 @@ Returns a count of the messages in the mailbox
 Retrieve a message/messages by its number/numbers. If the `mailparser` argument is true returned messages will be parsed
 and looks like an objects. Otherwise it will be strings. Notice that results are sparse array with indexes representing
 message numbers. You can access message with its number like that `messages[number]` and use all HOF like this
-`messages.map(function(mail, num){ return [num, mail.subject]; })`
+`messages.map(function(mail, num){ return [num, mail.subject]; })`.
+Or you can represent it like normal array with construction like this: `messages.filter(function(a){ return a'; })`
 
 ### retrieveAll(callback)
 - **callback** - __function(err, messages)__
