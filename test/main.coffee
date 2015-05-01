@@ -245,7 +245,7 @@ describe 'POP3 client tests', () ->
         client.retrieve [count, count - 1, count - 2], (err, data) ->
           assert.equal err, null
           assert.ok Array.isArray data
-          assert.equal data.length, 3
+          assert.equal data.filter((a) -> a).length, 3
           # TODO message checking
           client.disconnect done
     it 'should return an error with bad arguments', (done) ->
@@ -262,7 +262,7 @@ describe 'POP3 client tests', () ->
         client.delete [count, count - 1, count - 2], (err, data) ->
           assert.equal err, null
           assert.ok Array.isArray data
-          assert.equal data.length, 3
+          assert.equal data.filter((a) -> a).length, 3
           data.forEach (msg) ->
             assert.ok /^message (\d)* deleted$/.test(msg)
           client.rset (err, data) ->
@@ -286,7 +286,7 @@ describe 'POP3 client tests', () ->
         client.retrieveAll (err, data) ->
           assert.equal err, null
           assert.ok Array.isArray data
-          assert.equal data.length, count
+          assert.equal data.filter((a) -> a).length, count
           client.disconnect done
 
   describe 'deleteAll', () ->
@@ -296,7 +296,7 @@ describe 'POP3 client tests', () ->
         client.deleteAll (err, data) ->
           assert.equal err, null
           assert.ok Array.isArray data
-          assert.equal data.length, count
+          assert.equal data.filter((a) -> a).length, count
           client.rset () ->
             client.disconnect done
 
@@ -307,7 +307,7 @@ describe 'POP3 client tests', () ->
         client.retrieveAndDeleteAll (err, data) ->
           assert.equal err, null
           assert.ok Array.isArray data
-          assert.equal data.length, count
+          assert.equal data.filter((a) -> a).length, count
           client.disconnect () ->
             client.connect () ->
               client.count (err, count) ->

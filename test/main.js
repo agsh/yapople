@@ -345,7 +345,9 @@
           return client.retrieve([count, count - 1, count - 2], function(err, data) {
             assert.equal(err, null);
             assert.ok(Array.isArray(data));
-            assert.equal(data.length, 3);
+            assert.equal(data.filter(function(a) {
+              return a;
+            }).length, 3);
             return client.disconnect(done);
           });
         });
@@ -369,7 +371,9 @@
           return client["delete"]([count, count - 1, count - 2], function(err, data) {
             assert.equal(err, null);
             assert.ok(Array.isArray(data));
-            assert.equal(data.length, 3);
+            assert.equal(data.filter(function(a) {
+              return a;
+            }).length, 3);
             data.forEach(function(msg) {
               return assert.ok(/^message (\d)* deleted$/.test(msg));
             });
@@ -406,7 +410,9 @@
           return client.retrieveAll(function(err, data) {
             assert.equal(err, null);
             assert.ok(Array.isArray(data));
-            assert.equal(data.length, count);
+            assert.equal(data.filter(function(a) {
+              return a;
+            }).length, count);
             return client.disconnect(done);
           });
         });
@@ -420,7 +426,9 @@
           return client.deleteAll(function(err, data) {
             assert.equal(err, null);
             assert.ok(Array.isArray(data));
-            assert.equal(data.length, count);
+            assert.equal(data.filter(function(a) {
+              return a;
+            }).length, count);
             return client.rset(function() {
               return client.disconnect(done);
             });
@@ -436,7 +444,9 @@
           return client.retrieveAndDeleteAll(function(err, data) {
             assert.equal(err, null);
             assert.ok(Array.isArray(data));
-            assert.equal(data.length, count);
+            assert.equal(data.filter(function(a) {
+              return a;
+            }).length, count);
             return client.disconnect(function() {
               return client.connect(function() {
                 return client.count(function(err, count) {
