@@ -17,7 +17,8 @@ var client = new Client({
   mailparser: true,
   username: 'username',
   password: 'password'
-}).connect(function() {
+});
+client.connect(function() {
   client.retrieveAll(function(err, messages) {
     messages.forEach(function(message) {
       console.log(message.subject);
