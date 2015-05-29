@@ -42,7 +42,7 @@ putting somewhere event-listener functions to retrieve data.
 `npm test`
 
 ## Constructor properties
-When you creates new Client object you should pass an object which describes connection properties.
+When you create new Client object you should pass an object which describes connection properties.
 
 * **hostname** - _string_ - mailserver hostname
 * **port** - _number_ - port, usually 110 or 995 for TLS connection
