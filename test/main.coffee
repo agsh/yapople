@@ -323,6 +323,6 @@ describe 'POP3 client tests', () ->
           assert.equal err, null
           assert.ok Array.isArray data
           assert.equal data.length, 0
-          client.disconnect()
+          client.disconnect done
 
   # TODO command sequence test

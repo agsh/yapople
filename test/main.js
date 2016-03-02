@@ -469,7 +469,7 @@
             assert.equal(err, null);
             assert.ok(Array.isArray(data));
             assert.equal(data.length, 0);
-            return client.disconnect();
+            return client.disconnect(done);
           });
         });
       });
