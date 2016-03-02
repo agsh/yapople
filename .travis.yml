@@ -1,7 +1,8 @@
 language: node_js
 node_js:
   - "0.12"
-  - "iojs"
+  - "4.0"
+  - "4.1"
 script: npm run-script test-on-travis
 after_success:
   - npm run-script upload-to-coveralls
