@@ -436,7 +436,7 @@
         });
       });
     });
-    return describe('retrieveAndDeleteAll', function() {
+    describe('retrieveAndDeleteAll', function() {
       return it('should return all messages and delete them', function(done) {
         var client;
         client = new Client(tlsOptions);
@@ -456,6 +456,20 @@
                 });
               });
             });
+          });
+        });
+      });
+    });
+    return describe('retrieve zero messages', function() {
+      return it('should return an empty array', function(done) {
+        var client;
+        client = new Client(tlsOptions);
+        return client.connect(function(err, data) {
+          return client.retrieveAll(function(err, data) {
+            assert.equal(err, null);
+            assert.ok(Array.isArray(data));
+            assert.equal(data.length, 0);
+            return client.disconnect();
           });
         });
       });

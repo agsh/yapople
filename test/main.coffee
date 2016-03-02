@@ -315,4 +315,14 @@ describe 'POP3 client tests', () ->
                 assert.equal count, 0
                 client.disconnect done
 
+  describe 'retrieve zero messages', () ->
+    it 'should return an empty array', (done) ->
+      client = new Client tlsOptions
+      client.connect (err, data) ->
+        client.retrieveAll (err, data) ->
+          assert.equal err, null
+          assert.ok Array.isArray data
+          assert.equal data.length, 0
+          client.disconnect()
+
   # TODO command sequence test
