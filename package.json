@@ -1,6 +1,6 @@
 {
   "name": "yapople",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": "Andrew D.Laptev <a.d.laptev@gmail.com>",
   "description": "Yet another POP3 library",
   "main": "lib/yapople.js",
