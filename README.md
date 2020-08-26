@@ -16,7 +16,12 @@ var client = new Client({
   tls: true,
   mailparser: true,
   username: 'username',
-  password: 'password'
+  password: 'password',
+  options: {
+    secureContext: {
+      passphrase: "passphrase"
+    }
+  }
 });
 client.connect(function() {
   client.retrieveAll(function(err, messages) {
@@ -30,7 +35,7 @@ client.connect(function() {
 
 Also this is a callback-driven and command-queued library instead of [poplib](https://github.com/ditesh/node-poplib)
 So you can run methods in chain, don't think about already running command and get what you want in callback instead of
-putting somewhere event-listener functions to retrieve data.
+putting somewhere event-listener functions to retrieve data. You can add connection options (optional) after callback.
 
 > Uses the last TLS Api (since crypto.createCredentials is deprecated),
 > so it works only with node.js v.0.12 or later.
