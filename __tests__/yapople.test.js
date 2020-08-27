@@ -87,11 +87,9 @@ describe('integration tests for callback style', () => {
 
     describe('list command', () => {
         it('returns message list count', (done) => {
-            jest.setTimeout(120000);
             const client = new Client(tlsOptions);
             client.connect((err, data) => {
                 expect(err).toBe(null);
-                console.log(data);
                 client.list((err, data) => {
                     expect(err).toBe(null);
                     expect(Object.keys(data).length).toBeGreaterThanOrEqual(0);
