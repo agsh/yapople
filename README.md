@@ -55,6 +55,7 @@ When you create new Client object you should pass an object which describes conn
 * **username** - _string_ - mailbox username
 * **password** - _string_ - mailbox password
 * **mailparser** - _boolean_ - use [mailparser](https://github.com/andris9/mailparser) library to automatically decode messages
+* **options** - _object_ - Optional TLS configuration JSON object.
 
 ## Properties
 
@@ -62,11 +63,15 @@ When you create new Client object you should pass an object which describes conn
 
 ## Methods
 
-### connect(callback)
+### connect([options, ]callback)
+- **options** - __object__
 - **callback** - __function(err)__
 
 Connect to the mailserver using `hostname` and `port`. Starts TLS connection if `tls` property is true.
 Then login into your mailbox using credentials properties `username` and `password`.
+
+If `tls` is true and `options` is defined, `options` will be used to connect. Precedence goes to
+constructor `options`.
 
 ### count(callback)
 - **callback** - __function(err, count)__
