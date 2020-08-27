@@ -2,29 +2,31 @@ const nodemailer = require('nodemailer');
 const { Client } = require('../lib/yapople');
 
 describe('integration tests for callback style', () => {
-    // beforeAll(() => {
-    //     jest.setTimeout(120000);
-    //
-    //     const transporter = nodemailer.createTransport({
-    //         service: 'Mail.ru',
-    //         auth: {
-    //             user: 'yapople@mail.ru',
-    //             pass: 'yapopleyapopleyapopleyapople',
-    //         },
-    //     });
-    //
-    //     const mailOptions = {
-    //         from: 'yapople@mail.ru',
-    //         to: 'yapople@mail.ru',
-    //         html: '<b>Hello world ✔ Дорждынька</b>',
-    //     };
-    //
-    //     return Promise.all([0,1,2,3].map(cou => transporter.sendMail({
-    //         ...mailOptions,
-    //         subject: `msg ${cou} сообщение`,
-    //         text: `msg ${cou} сообщение`,
-    //     })));
-    // });
+    let count = 0;
+
+    beforeAll(() => {
+        jest.setTimeout(60000);
+
+        const transporter = nodemailer.createTransport({
+            service: 'Mail.ru',
+            auth: {
+                user: 'yapople@mail.ru',
+                pass: 'yapopleyapopleyapopleyapople',
+            },
+        });
+
+        const mailOptions = {
+            from: 'yapople@mail.ru',
+            to: 'yapople@mail.ru',
+            html: '<b>Hello world ✔ Дорждынька</b>',
+        };
+
+        return Promise.all([0,1,2,3].map(cou => transporter.sendMail({
+            ...mailOptions,
+            subject: `msg ${cou} сообщение`,
+            text: `msg ${cou} сообщение`,
+        })));
+    });
 
     const options = {
         hostname: 'pop.mail.ru',
@@ -73,7 +75,7 @@ describe('integration tests for callback style', () => {
     describe('stat command', () => {
         it('returns message stat count', (done) => {
             const client = new Client(tlsOptions);
-            client.connect((err, data) => {
+            client.connect((err) => {
                 expect(err).toBe(null);
                 client.stat((err, data) => {
                     expect(err).toBe(null);
@@ -88,11 +90,377 @@ describe('integration tests for callback style', () => {
     describe('list command', () => {
         it('returns message list count', (done) => {
             const client = new Client(tlsOptions);
-            client.connect((err, data) => {
+            client.connect((err) => {
                 expect(err).toBe(null);
                 client.list((err, data) => {
                     expect(err).toBe(null);
                     expect(Object.keys(data).length).toBeGreaterThanOrEqual(0);
+                    client.disconnect(done);
+                });
+            });
+        });
+
+        it('returns info about message', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.list(1,(err) => {
+                    expect(err).toBe(null);
+                    client.disconnect(done);
+                });
+            });
+        });
+    });
+
+    describe('retr command', () => {
+        it('should return message body for known message', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.retr(1,(err) => {
+                    expect(err).toBe(null);
+                    client.disconnect(done);
+                });
+            });
+        });
+
+        it('should return an error for unknown message', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.retr(666,(err) => {
+                    expect(err).not.toBe(null);
+                    expect(err).toBeInstanceOf(Error);
+                    client.disconnect(done);
+                });
+            });
+        });
+
+        it('should return parsed message using mailparser', (done) => {
+            const client = new Client({
+                ...tlsOptions,
+                mailparser: true,
+            });
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.retr(1,(err, data) => {
+                    expect(err).toBe(null);
+                    expect(data.text).toBeDefined();
+                    expect(data.subject).toBeDefined();
+                    expect(data.headers).toBeDefined();
+                    client.disconnect(done);
+                });
+            });
+        });
+    });
+
+    describe('count command', () => {
+        it('should return message count', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.count((err, data) => {
+                    expect(err).toBe(null);
+                    expect(data).toBeGreaterThanOrEqual(0);
+                    count = data;
+                    client.disconnect(done);
+                });
+            });
+        });
+    });
+
+    describe('dele command', () => {
+        it('should mark last message as deleted', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.dele(count, (err) => {
+                    expect(err).toBe(null);
+                    client.quit(done);
+                });
+            });
+        });
+
+        it('should be deleted after the end of transaction', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.count((err, data) => {
+                    expect(err).toBe(null);
+                    expect(data).toBe(count - 1);
+                    count = data;
+                    client.disconnect(done);
+                });
+            });
+        });
+    });
+
+    describe('rset command', () => {
+        it('should mark last message as deleted, then reset', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.dele(count, (err) => {
+                    expect(err).toBe(null);
+                    client.rset((err) => {
+                        expect(err).toBe(null);
+                        client.quit(done);
+                    });
+                });
+            });
+        });
+
+        it('should not be deleted after the end of transaction', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.count((err, data) => {
+                    expect(err).toBe(null);
+                    expect(data).toBe(count);
+                    count = data;
+                    client.disconnect(done);
+                });
+            });
+        });
+    });
+
+    describe('connect', () => {
+        it('should properly connect after disconnection', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.disconnect((err) => {
+                    expect(err).toBe(null);
+                    client.connect((err) => {
+                        expect(err).toBe(null);
+                        client.disconnect(done);
+                    });
+                });
+            });
+        });
+    });
+
+    describe('top', () => {
+        it('should return an error for wrong message number', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.top(0, 0, (err) => {
+                    expect(err).toBeDefined();
+                    expect(err).toBeInstanceOf(Error);
+                    client.disconnect(done);
+                });
+            });
+        });
+
+        it('should return raw message headers', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.top(1, 0, (err, data) => {
+                    expect(err).toBe(null);
+                    expect(data).toBeInstanceOf(Buffer);
+                    client.disconnect(done);
+                });
+            });
+        });
+
+        it('should return raw message headers and body', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.top(1, 10, (err, data) => {
+                    expect(err).toBe(null);
+                    expect(data).toBeInstanceOf(Buffer);
+                    client.disconnect(done);
+                });
+            });
+        });
+
+        it('should return parsed message headers', (done) => {
+            const client = new Client({
+                ...tlsOptions,
+                mailparser: true,
+            });
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.top(1, 0, (err, res) => {
+                    expect(err).toBe(null);
+                    expect(res.subject).toBeDefined();
+                    expect(res.from).toBeDefined();
+                    expect(res.to).toBeDefined();
+                    expect(res.date).toBeDefined();
+                    client.disconnect(done);
+                });
+            });
+        });
+    });
+
+    describe('retrieve', () => {
+        it('should properly works on message number', (done) => {
+            const client = new Client({
+                ...tlsOptions,
+                mailparser: true,
+            });
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.retrieve(count, (err, data) => {
+                    expect(err).toBe(null);
+                    expect(data).toBeInstanceOf(Object);
+                    client.disconnect(done);
+                });
+            });
+        });
+
+        it('should properly works on array of message numbers', (done) => {
+            const client = new Client({
+                ...tlsOptions,
+                mailparser: true,
+            });
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.retrieve([count, count - 1, count - 2], (err, data) => {
+                    expect(err).toBe(null);
+                    expect(data).toBeInstanceOf(Array);
+                    expect(data.filter(a => a).length).toBe(3);
+                    data.forEach(msg => expect(msg).toBeInstanceOf(Object));
+                    client.disconnect(done);
+                });
+            });
+        });
+
+        it('should return an error with bad arguments', (done) => {
+            const client = new Client({
+                ...tlsOptions,
+                mailparser: true,
+            });
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.retrieve([count, count + 1, count + 2], (err) => {
+                    expect(err).toBeInstanceOf(Error);
+                    client.disconnect(done);
+                });
+            });
+        });
+    });
+
+    describe('delete', () => {
+        it('should properly delete an array of messages', (done) => {
+            const client = new Client({
+                ...tlsOptions,
+                mailparser: true,
+            });
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.delete([count, count - 1, count - 2], (err, data) => {
+                    expect(err).toBe(null);
+                    expect(data).toBeInstanceOf(Array);
+                    expect(data.filter(a => a).length).toBe(3);
+                    data.forEach(msg => expect(/^message (\d)* deleted$/.test(msg)).toBe(true));
+                    client.rset((err) => {
+                        expect(err).toBe(null);
+                        client.disconnect(done);
+                    });
+                });
+            });
+        });
+
+        it('should return an error with bad arguments and make a rset after all', (done) => {
+            const client = new Client({
+                ...tlsOptions,
+                mailparser: true,
+            });
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.delete([count, count + 1, count + 2], (err) => {
+                    expect(err).toBeInstanceOf(Error);
+                    client.disconnect((err) => {
+                        expect(err).toBe(null);
+                        client.connect((err) => {
+                            expect(err).toBe(null);
+                            client.count((err, cou) => {
+                                expect(cou).toBe(count);
+                                client.disconnect(done);
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    describe('retrieveAll', () => {
+        it('should return all messages', (done) => {
+            const client = new Client({
+                ...tlsOptions,
+                mailparser: true,
+            });
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.retrieveAll((err, data) => {
+                    expect(err).toBe(null);
+                    expect(data).toBeInstanceOf(Array);
+                    expect(data.filter(a => a).length).toBe(count);
+                    data.forEach(msg => expect(msg).toBeInstanceOf(Object));
+                    data.forEach(msg => expect(typeof msg.subject).toBe('string'));
+                    client.disconnect(done);
+                });
+            });
+        });
+    });
+
+    describe('deleteAll', () => {
+        it('should delete all messages', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.deleteAll((err, data) => {
+                    expect(err).toBe(null);
+                    expect(data).toBeInstanceOf(Array);
+                    expect(data.filter(a => a).length).toBe(count);
+                    client.rset((err) => {
+                        expect(err).toBe(null);
+                        client.disconnect(done);
+                    });
+                });
+            });
+        });
+    });
+
+    describe('retrieveAndDeleteAll', () => {
+        it('should return all messages and delete them', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.retrieveAndDeleteAll((err, data) => {
+                    expect(err).toBe(null);
+                    expect(data).toBeInstanceOf(Array);
+                    expect(data.filter(a => a).length).toBe(count);
+                    client.disconnect((err) => {
+                        expect(err).toBe(null);
+                        client.connect((err) => {
+                            expect(err).toBe(null);
+                            client.count((err, count) => {
+                                expect(err).toBe(null);
+                                expect(count).toBe(0);
+                                client.disconnect(done);
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    describe( 'retrieve zero messages', () => {
+        it('should return an empty array', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.retrieveAll((err, data) => {
+                    expect(err).toBe(null);
+                    expect(data).toBeInstanceOf(Array);
+                    expect(data.length).toBe(0);
                     client.disconnect(done);
                 });
             });
