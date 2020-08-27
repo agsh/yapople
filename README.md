@@ -154,6 +154,7 @@ Returns length of a message in octets. If no number passed, list returns an obje
 and message lengths as a values
 
 ### quit([callback])
+### disconnect([callback])
 - **callback** - __function(err)__
 
 Finish current session and disconnect. All messages marked as deleted after this command will be erased.
