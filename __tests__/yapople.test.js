@@ -70,6 +70,22 @@ describe('integration tests for callback style', () => {
             });
         });
 
+        it('should login to TLS server with tls option in connect argument', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect(tlsOptions, (err, data) => {
+                expect(err).toBe(null);
+                expect(data).toBe('Welcome!');
+                client.disconnect(done);
+            });
+        });
+
+        it('should login to TLS server with promise-based approach', async () => {
+            const client = new Client(tlsOptions);
+            const message = await client.connect();
+            expect(message).toBe('Welcome!');
+            await client.disconnect();
+        });
+
     });
 
     describe('stat command', () => {
