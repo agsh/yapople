@@ -1,13 +1,13 @@
 {
   "name": "yapople",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": "Andrew D.Laptev <a.d.laptev@gmail.com>",
   "description": "Yet another POP3 library",
   "main": "lib/yapople.js",
   "scripts": {
     "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha",
-    "test-on-travis": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly",
-    "test-coveralls": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls && rm -rf ./coverage",
+    "test-on-travis1": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly",
+    "test-coveralls1": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls && rm -rf ./coverage",
     "upload-to-coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "repository": {
@@ -30,9 +30,16 @@
   },
   "devDependencies": {
     "coveralls": ">=2.11.2",
+    "eslint": "^7.7.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "istanbul": ">=0.3.5",
+    "jest": "^26.4.2",
     "mocha": "^5.2.0",
     "mocha-lcov-reporter": "0.0.1",
-    "nodemailer": "^4.7.0"
+    "nodemailer": "^6.4.11"
   }
 }
