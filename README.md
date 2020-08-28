@@ -25,7 +25,7 @@ const client = new Client({
 });
 (async () => {
     await client.connect();
-    const messages = client.retrieveAll();
+    const messages = await client.retrieveAll();
     messages.forEach((message) => {
       console.log(message.subject);
     });
