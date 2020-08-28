@@ -82,7 +82,7 @@ When you create new Client object you should pass an object which describes conn
 * **password** - _string_ - mailbox password
 * **mailparser** - _boolean_ - use [mailparser](https://github.com/andris9/mailparser) library to automatically decode messages
 * **tls** - _boolean_ - use TLS encryption
-* **optional** - _object_ - Optional configuration JSON object for socket creation. 
+* **options** - _object_ - Optional configuration JSON object for socket creation. 
 (see. [TLS](https://nodejs.org/dist/latest-v12.x/docs/api/tls.html#tls_tls_connect_options_callback) 
 and [NET](https://nodejs.org/dist/latest-v12.x/docs/api/net.html#net_socket_connect_options_connectlistener))
 
