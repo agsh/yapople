@@ -192,4 +192,4 @@ Delete a message by its number.
 **0.4.0**
 - all methods returns promises
 - tests were rewritten in js and jest
-- additional parameter `tlsOptions` in the `constructor` and `connect` method
+- additional parameter `options` in the `constructor` and `connect` method
