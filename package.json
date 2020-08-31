@@ -37,5 +37,5 @@
     "jest": "^26.4.2",
     "nodemailer": "^6.4.11"
   },
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+  "publishConfig": { "registry": "https://npm.pkg.github.com/@agsh" }
 }
