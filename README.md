@@ -25,7 +25,7 @@ const client = new Client({
 });
 (async () => {
     await client.connect();
-    const messages = client.retrieveAll();
+    const messages = await client.retrieveAll();
     messages.forEach((message) => {
       console.log(message.subject);
     });
@@ -82,7 +82,7 @@ When you create new Client object you should pass an object which describes conn
 * **password** - _string_ - mailbox password
 * **mailparser** - _boolean_ - use [mailparser](https://github.com/andris9/mailparser) library to automatically decode messages
 * **tls** - _boolean_ - use TLS encryption
-* **optional** - _object_ - Optional configuration JSON object for socket creation. 
+* **options** - _object_ - Optional configuration JSON object for socket creation. 
 (see. [TLS](https://nodejs.org/dist/latest-v12.x/docs/api/tls.html#tls_tls_connect_options_callback) 
 and [NET](https://nodejs.org/dist/latest-v12.x/docs/api/net.html#net_socket_connect_options_connectlistener))
 
@@ -154,6 +154,7 @@ Returns length of a message in octets. If no number passed, list returns an obje
 and message lengths as a values
 
 ### quit([callback])
+### disconnect([callback])
 - **callback** - __function(err)__
 
 Finish current session and disconnect. All messages marked as deleted after this command will be erased.
