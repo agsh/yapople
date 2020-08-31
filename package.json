@@ -36,5 +36,6 @@
     "eslint-plugin-standard": "^4.0.1",
     "jest": "^26.4.2",
     "nodemailer": "^6.4.11"
-  }
+  },
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
 }
