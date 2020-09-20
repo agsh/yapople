@@ -4,6 +4,7 @@
   "author": "Andrew D.Laptev <a.d.laptev@gmail.com>",
   "description": "Yet another POP3 library",
   "main": "lib/yapople.js",
+  "typings": "lib/yapople.d.ts",
   "scripts": {
     "test": "jest --coverage",
     "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls"
@@ -37,5 +38,7 @@
     "jest": "^26.4.2",
     "nodemailer": "^6.4.11"
   },
-  "publishConfig": { "registry": "https://npm.pkg.github.com/@agsh" }
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@agsh"
+  }
 }
