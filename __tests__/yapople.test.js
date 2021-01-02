@@ -65,7 +65,7 @@ describe('integration tests for callback style', () => {
             const client = new Client(tlsOptions);
             client.connect((err, data) => {
                 expect(err).toBe(null);
-                expect(data).toBe('Welcome!');
+                expect(data).toBe('hello yapople@mail.ru');
                 client.disconnect(done);
             });
         });
@@ -74,7 +74,7 @@ describe('integration tests for callback style', () => {
             const client = new Client(tlsOptions);
             client.connect(tlsOptions, (err, data) => {
                 expect(err).toBe(null);
-                expect(data).toBe('Welcome!');
+                expect(data).toBe('hello yapople@mail.ru');
                 client.disconnect(done);
             });
         });
@@ -82,7 +82,7 @@ describe('integration tests for callback style', () => {
         it('should login to TLS server with promise-based approach', async () => {
             const client = new Client(tlsOptions);
             const message = await client.connect();
-            expect(message).toBe('Welcome!');
+            expect(message).toBe('hello yapople@mail.ru');
             await client.disconnect();
         });
 
