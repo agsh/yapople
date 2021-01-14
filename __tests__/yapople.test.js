@@ -1,28 +1,27 @@
 const { Client } = require('../lib/yapople');
 
+jest.mock('tls');
+jest.mock('net');
+
 describe('integration tests for callback style', () => {
     let count = 0;
-
-    beforeEach(done => {
-        setTimeout(done, 1000);
-    });
 
     beforeAll(() => {
         jest.setTimeout(60000);
     });
 
     const options = {
-        hostname: 'pop.rambler.ru',
+        hostname: 'pop.mail.ru',
         port: 110,
-        username: 'yapople',
-        password: 'Yapople666',
+        username: 'yapople@bk.ru',
+        password: 'elpopayelpopayelpopayelpopay',
     };
     const tlsOptions = {
-        hostname: 'pop.rambler.ru',
+        hostname: 'pop.mail.ru',
         port:  995,
         tls: true,
-        username: 'yapople',
-        password: 'Yapople666',
+        username: 'yapople@bk.ru',
+        password: 'elpopayelpopayelpopayelpopay',
     };
 
     describe('connect', () => {
@@ -35,12 +34,12 @@ describe('integration tests for callback style', () => {
             });
         });
 
-        it('should login to TLS server without tls option', (done) => {
+        it('should not login to TLS server without tls option', (done) => {
             const client = new Client(options);
-            client.connect((err, data) => {
-                expect(err).toBe(null);
-                expect(data).toBe('Logged in.');
-                client.disconnect(done);
+            client.connect((err) => {
+                expect(err).not.toBe(null);
+                expect(err.message).toBe('POP3 is available only with SSL or TLS connection enabled');
+                done();
             });
         });
 
@@ -103,7 +102,7 @@ describe('integration tests for callback style', () => {
             const client = new Client(tlsOptions);
             client.connect((err) => {
                 expect(err).toBe(null);
-                client.list(1,(err) => {
+                client.list(1, (err) => {
                     expect(err).toBe(null);
                     client.disconnect(done);
                 });
@@ -114,9 +113,9 @@ describe('integration tests for callback style', () => {
     describe('retr command', () => {
         it('should return message body for known message', (done) => {
             const client = new Client(tlsOptions);
-            client.connect((err) => {
+            client.connect(err => {
                 expect(err).toBe(null);
-                client.retr(1,(err) => {
+                client.retr(1, err => {
                     expect(err).toBe(null);
                     client.disconnect(done);
                 });
@@ -125,9 +124,9 @@ describe('integration tests for callback style', () => {
 
         it('should return an error for unknown message', (done) => {
             const client = new Client(tlsOptions);
-            client.connect((err) => {
+            client.connect(err => {
                 expect(err).toBe(null);
-                client.retr(666,(err) => {
+                client.retr(666, err => {
                     expect(err).not.toBe(null);
                     expect(err).toBeInstanceOf(Error);
                     client.disconnect(done);
@@ -140,9 +139,9 @@ describe('integration tests for callback style', () => {
                 ...tlsOptions,
                 mailparser: true,
             });
-            client.connect((err) => {
+            client.connect(err => {
                 expect(err).toBe(null);
-                client.retr(1,(err, data) => {
+                client.retr(1, (err, data) => {
                     expect(err).toBe(null);
                     expect(data.text).toBeDefined();
                     expect(data.subject).toBeDefined();
@@ -356,7 +355,7 @@ describe('integration tests for callback style', () => {
                     expect(data).toBeInstanceOf(Array);
                     expect(data.filter(a => a).length).toBe(3);
                     console.log(data);
-                    data.forEach(msg => expect(/^Marked to be deleted.$/.test(msg)).toBe(true));
+                    data.forEach(msg => expect(/OK/.test(msg)).toBe(true));
                     client.rset((err) => {
                         expect(err).toBe(null);
                         client.disconnect(done);

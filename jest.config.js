@@ -1,9 +1,9 @@
 module.exports = {
     collectCoverageFrom: [
-        'lib/**/*.js',
+        'lib/**/*.js'
     ],
     coverageDirectory: 'coverage',
     testEnvironment: 'node',testMatch: [
-        '**/__tests__/**/*.test.js',
+        '**/__tests__/**/*.test.js'
     ],
 };
