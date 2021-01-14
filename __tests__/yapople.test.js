@@ -1,4 +1,3 @@
-const nodemailer = require('nodemailer');
 const { Client } = require('../lib/yapople');
 
 describe('integration tests for callback style', () => {
@@ -8,43 +7,22 @@ describe('integration tests for callback style', () => {
         setTimeout(done, 1000);
     });
 
-    beforeAll(async () => {
+    beforeAll(() => {
         jest.setTimeout(60000);
-
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.rambler.ru',
-            port: 465,
-            secure: true,
-            auth: {
-                user: 'yapople',
-                pass: 'Yapople777',
-            },
-        });
-
-        const mailOptions = {
-            from: 'yapople@rambler.ru',
-            to: 'yapople@rambler.ru',
-        };
-
-        return Promise.all([0,1,2,3].map(cou => transporter.sendMail({
-            ...mailOptions,
-            subject: `msg ${cou} сообщение`,
-            text: `msg ${cou} сообщение`,
-        })));
     });
 
     const options = {
         hostname: 'pop.rambler.ru',
         port: 110,
         username: 'yapople',
-        password: 'Yapople777',
+        password: 'Yapople666',
     };
     const tlsOptions = {
         hostname: 'pop.rambler.ru',
         port:  995,
         tls: true,
         username: 'yapople',
-        password: 'Yapople777',
+        password: 'Yapople666',
     };
 
     describe('connect', () => {
