@@ -72,12 +72,11 @@ class Socket extends EventEmitter {
             if (message === 'LIST 1\r\n') {
                 return this.emit('data', '+OK 1 86');
             }
-            this.emit('data', Buffer.from(`+OK ${messages.length} messages (666 octets)\r\n`));
             const response = [
-                `+OK ${messages.length} messages (666 octets)`,
+                `+OK ${messages.length} messages (${messages.reduce((prev, cur) => prev + cur.length, 0)} octets)`,
                 ...messages.map((message, i) => `${i + 1} ${JSON.stringify(message).length}`),
                 '.'
-            ].join('\r\n');
+            ].join('\r\n') + '\r\n';
             this.emit('data', Buffer.from(response));
         } else if (message.startsWith('RETR') || message.startsWith('TOP')) {
             const num = parseInt(message.startsWith('RETR') ? message.substring(5) : message.substring(4));
