@@ -465,4 +465,18 @@ describe('integration tests for callback style', () => {
             });
         });
     });
+
+    describe('list zero messages', () => {
+        it('should return empty object', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.list((err, data) => {
+                    expect(err).toBe(null);
+                    expect(Object.keys(data).length).toBe(0);
+                    client.disconnect(done);
+                });
+            });
+        });
+    });
 });
