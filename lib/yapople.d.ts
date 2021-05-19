@@ -1,3 +1,5 @@
+import { TlsOptions } from "tls";
+
 interface YapopleClientConfig {
     host: string;
     port:  number;
@@ -5,23 +7,37 @@ interface YapopleClientConfig {
     mailparser?: boolean;
     username: string;
     password: string;
-    options?: any;
+    options?: TlsOptions;
 }
 
 interface Message {
     html: string;
-    headers: any;
+    text: string;
+    headers: Record<string,string>;
     subject: string;
     references: string[];
     messageId: string;
     inReplyTo: string[];
     priority: string;
-    from: object[];
-    replyTo: object[];
-    to: object[];
+    from: { address: string, name: string }[];
+    replyTo: { address: string, name: string }[];
+    to: { address: string, name: string }[];
     date: Date;
     receivedDate: Date;
+    attachments?:MessageAttachment[]
 }   
+
+interface MessageAttachment{
+    contentType: string,
+    fileName: string,
+    transferEncoding: string,
+    contentDisposition: string,
+    contentId: string,
+    generatedFileName: string,
+    checksum: string,
+    length: number,
+    content: Buffer;
+}
 
 export class Client {
     constructor(config: YapopleClientConfig)
