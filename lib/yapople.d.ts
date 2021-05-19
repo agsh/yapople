@@ -27,9 +27,13 @@ export class Client {
     constructor(config: YapopleClientConfig)
     connect(config?:YapopleClientConfig): Promise<void>;
     count(): Promise<number>;
-    retrieve(messageNumber:number|number[]):Promise<Message[]>
+    retrieve(messageNumber:number[]):Promise<Message[]>
+    retrieve(messageNumber:number):Promise<Message>
+    retrieve(messageNumber:number|number[]):Promise<Message[]>|Promise<Message>
     retrieveAll(): Promise<Message[]>;
-    delete(messageNumber:number|number[]):Promise<Message[]>
+    delete(messageNumber:number[]):Promise<Message[]>
+    delete(messageNumber:number):Promise<Message>
+    delete(messageNumber:number|number[]):Promise<Message[]>|Promise<Message>
     deleteAll(): Promise<any>;
     retrieveAndDeleteAll(): Promise<Message[]>;
     list(messageNumber:number):Promise<any>;
