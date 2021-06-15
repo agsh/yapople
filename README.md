@@ -9,7 +9,7 @@ the eleven POP3 commands. You just want to retrieve some messages from your mail
 example how to do this with 'yapople':
 
 ```javascript
-const Client = require('yapople').Client;
+const { Client } = require('yapople');
 const client = new Client({
   host: 'pop.mail.ru',
   port:  995,
@@ -93,6 +93,7 @@ and [NET](https://nodejs.org/dist/latest-v12.x/docs/api/net.html#net_socket_conn
 ## Methods
 
 All the methods can be used both callback-style or promise-style if callback has been omitted.
+In the examples below only async-await style will be used.
 
 ### connect([options], [callback])
 - **options** - __object__
@@ -117,7 +118,7 @@ Retrieve a message/messages by its number/numbers. If the `mailparser` argument 
 and looks like an objects. Otherwise it will be strings. Notice that results are sparse array with indexes representing
 message numbers. You can access message with its number like that `messages[number]` and use all HOF like this
 `messages.map(function(mail, num){ return [num, mail.subject]; })`.
-Or you can represent it like normal array with construction like this: `messages.filter(function(a){ return a'; })`
+Or you can represent it like normal array with construction like this: `messages.filter(a => a)`
 
 ### retrieveAll([callback])
 - **callback** - __function(err, messages)__
