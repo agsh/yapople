@@ -54,5 +54,6 @@ export class Client {
     retrieveAndDeleteAll(): Promise<Message[]>;
     list(messageNumber:number):Promise<any>;
     quit():Promise<void>;
+    rset():Promise<void>;
     disconnect():Promise<void>
 }
