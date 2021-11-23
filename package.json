@@ -1,6 +1,6 @@
 {
  "name": "yapople",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "author": "Andrew D.Laptev <a.d.laptev@gmail.com>",
   "description": "Yet another POP3 library",
   "main": "lib/yapople.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wslee94/yapople.git"
+    "url": "https://github.com/agsh/yapople.git"
   },
   "dependencies": {
     "mailparser": "^0.5.1"
