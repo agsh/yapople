@@ -45,8 +45,7 @@ CjxIVE1MPjxCT0RZPjxkaXY+MTIzPC9kaXY+PGRpdj4xMjM8L2Rpdj48ZGl2IGRhdGEtc2lnbmF0
 dXJlLXdpZGdldD0iY29udGFpbmVyIj48ZGl2IGRhdGEtc2lnbmF0dXJlLXdpZGdldD0iY29udGVu
 dCI+PGRpdj4tLTxicj5ZYXBvcGxlIFlhcG9wbGU8L2Rpdj48L2Rpdj48L2Rpdj48L0JPRFk+PC9I
 VE1MPgo=
-----ALT--e2F8f5F19Ae0d3Ad5402B90c94Da42261610599299--
-.` + '\r\n';
+----ALT--e2F8f5F19Ae0d3Ad5402B90c94Da42261610599299--`+ '\r\n.\r\n';
 
 let messages = Array.from(new Array(4)).fill(msg);
 
