@@ -1,7 +1,6 @@
 # yapople
 Yet another POP3 library
 
-[![Build Status](https://travis-ci.org/agsh/yapople.png)](https://travis-ci.org/agsh/yapople)
 [![Coverage Status](https://coveralls.io/repos/agsh/yapople/badge.svg?branch=master)](https://coveralls.io/r/agsh/yapople?branch=master)
 
 The design propose of the library is simplicity. A lot of common tasks with you POP3 mailbox doesn't require knowledge of

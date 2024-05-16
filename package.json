@@ -6,7 +6,8 @@
   "main": "lib/yapople.js",
   "typings": "lib/yapople.d.ts",
   "scripts": {
-    "test": "jest --coverage",
+    "test": "jest",
+    "coverage": "jest --coverage",
     "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
@@ -14,7 +15,7 @@
     "url": "https://github.com/agsh/yapople.git"
   },
   "dependencies": {
-    "mailparser": "^0.5.1"
+    "mailparser": "^0.6.2"
   },
   "keywords": [
     "email",
@@ -28,7 +29,7 @@
     "node": ">=5.10"
   },
   "devDependencies": {
-    "coveralls": "^3.1.0",
+    "coveralls": "^3.1.1",
     "eslint": "^7.7.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.22.0",

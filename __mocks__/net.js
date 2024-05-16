@@ -10,6 +10,9 @@ class Socket extends EventEmitter {
     write() {
         this.emit('data', Buffer.from('-ERR POP3 is available only with SSL or TLS connection enabled\r\n'));
     }
+    destroy() {
+
+    }
 }
 
 module.exports = {
