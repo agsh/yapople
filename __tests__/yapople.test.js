@@ -354,7 +354,6 @@ describe('integration tests for callback style', () => {
                     expect(err).toBe(null);
                     expect(data).toBeInstanceOf(Array);
                     expect(data.filter(a => a).length).toBe(3);
-                    console.log(data);
                     data.forEach(msg => expect(/OK/.test(msg)).toBe(true));
                     client.rset((err) => {
                         expect(err).toBe(null);
@@ -477,6 +476,48 @@ describe('integration tests for callback style', () => {
                     client.disconnect(done);
                 });
             });
+        });
+    });
+
+    describe('double connect', () => {
+        it('should not emit an error', (done) => {
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                expect(err).toBe(null);
+                client.connect((err) => {
+                    expect(err).toBe(null);
+                    client.disconnect(done);
+                });
+            });
+        });
+    });
+
+    describe('socket error event', () => {
+        it('should return an error in the callback function', (done) => {
+            let notConnected = true;
+            const error = new Error('error');
+            const client = new Client(tlsOptions);
+            client.connect((err) => {
+                if (notConnected) {
+                    notConnected = false;
+                    expect(err).toBe(null);
+                    client._socket.emit('error', error);
+                } else {
+                    expect(err).toBe(error);
+                    client.disconnect(done);
+                }
+            });
+        });
+    });
+
+    describe('socket error event', () => {
+        it('should rejects in promise', async () => {
+            const error = new Error('error');
+            const client = new Client(tlsOptions);
+            client.retrieve = jest.fn((_, cb) => cb(error));
+            await client.connect();
+            expect(client.retrieveAndDeleteAll()).rejects.toEqual(error);
+            client.quit();
         });
     });
 });

@@ -1,9 +1,11 @@
 module.exports = {
     collectCoverageFrom: [
-        'lib/**/*.js'
+        'lib/yapople.js'
     ],
     coverageDirectory: 'coverage',
-    testEnvironment: 'node',testMatch: [
+    coverageReporters: ['json', 'json-summary', 'text', 'lcov'],
+    testEnvironment: 'node',
+    testMatch: [
         '**/__tests__/**/*.test.js'
     ],
 };

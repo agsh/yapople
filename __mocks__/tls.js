@@ -103,6 +103,9 @@ class Socket extends EventEmitter {
             this.emit('end');
         }, 10);
     }
+    destroy() {
+
+    }
 }
 
 module.exports = {
