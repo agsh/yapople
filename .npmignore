@@ -1,0 +1,8 @@
+.idea
+coverage
+__tests__
+__mocks__
+.github
+.gitattributes
+jest.config.js
+.eslintrc.js
