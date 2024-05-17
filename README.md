@@ -2,6 +2,7 @@
 Yet another POP3 library
 
 [![Coverage Status](https://coveralls.io/repos/agsh/yapople/badge.svg?branch=master)](https://coveralls.io/r/agsh/yapople?branch=master)
+[![NPM version](https://img.shields.io/npm/v/yapople.svg)](https://www.npmjs.com/package/yapople)
 
 The design propose of the library is simplicity. A lot of common tasks with you POP3 mailbox doesn't require knowledge of
 the eleven POP3 commands. You just want to retrieve some messages from your mailbox and that's all! So here is quick
