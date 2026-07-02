@@ -15,7 +15,7 @@
     "url": "https://github.com/agsh/yapople.git"
   },
   "dependencies": {
-    "mailparser": "^0.6.2"
+    "mailparser": "^3.9.3"
   },
   "keywords": [
     "email",
